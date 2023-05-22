@@ -6,7 +6,7 @@ import { useState,useEffect } from 'react'
 import {useSelector} from 'react-redux'
 import {ThemeProvider,CssBaseline} from '@mui/material'
 import {createTheme} from '@mui/material/styles'
-import { themeSettings } from './themes'
+import themeSettings  from './themes'
 export default function App(){
 let mode=useSelector(state=>state.mode)
 let [Theme,setTheme]=useState('');
