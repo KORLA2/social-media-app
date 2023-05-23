@@ -6,6 +6,7 @@ import {useSelector,useDispatch} from 'react-redux'
 import { useState } from "react";
 export default function Navbar(){
 
+
     let theme=useTheme();
     let dispatch=useDispatch()
     let [toggle,setToggle] =useState(false)
@@ -19,7 +20,7 @@ export default function Navbar(){
 console.log(nonmobile,theme)
 return (
 
-    <FlexBetween pading='2rem 6%' >
+    <FlexBetween pading='2rem 6%' background={background} >
         <FlexBetween  gap='1.75rem'>
 <Typography fontWeight='bold'
 fontSize='clamp(1rem,2rem,2.25rem)'
@@ -115,7 +116,7 @@ bottom:0,
 height:'100%',
 maxWidth:'500px',
 minWidth:'300px',
-background:alt
+background:background
 
 
     }}>

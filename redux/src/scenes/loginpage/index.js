@@ -28,6 +28,12 @@ sx={{
 >
     SocialNetwork
 </Typography>
+<Box>
+    <Typography>
+
+    Connect with Your friends see what they are sharing
+   </Typography>
+    </Box>
     </Box>
 
         </Box>
