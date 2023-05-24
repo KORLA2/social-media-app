@@ -2,7 +2,8 @@ import Navbar from '../navbar/index'
 import Widgets from '../widgets/index'
 import {UserInterest} from '../widgets/UserInterest'
 import {Box, useMediaQuery} from '@mui/material'
-// import {InterestedPosts} from '../widgets/InterestedPosts'
+import {InterestedPosts} from '../widgets/InterestedPosts'
+import {Advert} from '../widgets/Advert'
 export default function  HomePage (){
 let nonmobile=useMediaQuery('(min-width:1000px)')
 
@@ -32,7 +33,7 @@ mt={nonmobile?undefined:'2rem'}
 >
 <UserInterest/>
 
-    {/* <InterestedPosts/> */}
+    <InterestedPosts/>
     </Box>
   {
     nonmobile&&(
@@ -40,7 +41,7 @@ mt={nonmobile?undefined:'2rem'}
     <Box 
 flexBasis={nonmobile?'26%':undefined}
 >
-<Widgets/>
+<Advert/>
     
     </Box>)
 }

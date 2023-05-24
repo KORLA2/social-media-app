@@ -12,7 +12,7 @@ export default function Navbar(){
     let [toggle,setToggle] =useState(false)
     let color=useSelector(state=>state.mode)
     let nonmobile=useMediaQuery('(min-width:1000px)')
-    let alt=theme.palette.background.alt;
+    let alt=theme.palette.background?.alt;
     let  dark=theme.palette.neutral?.dark;
     let background=theme.palette.background.default;
     let primary=theme.palette.primary.light;
@@ -20,7 +20,7 @@ export default function Navbar(){
 console.log(nonmobile,theme)
 return (
 
-    <FlexBetween pading='2rem 6%' background={background} >
+    <FlexBetween pading='2rem 6%' backgroundColor={alt} >
         <FlexBetween  gap='1.75rem'>
 <Typography fontWeight='bold'
 fontSize='clamp(1rem,2rem,2.25rem)'
