@@ -51,7 +51,7 @@ return (
             </IconButton>
 </FlexBetween>
 
-{IsComments&&( <Box mt='0.5rem'>
+{IsComments?( <Box mt='0.5rem'>
 
            {
 
@@ -68,7 +68,7 @@ return (
             
             
             </Box>
-    )
+    ):<Box mt='0.5rem'/>
 }
         </Widgetwrap>
 

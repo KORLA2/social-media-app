@@ -4,6 +4,7 @@ import {UserInterest} from '../widgets/UserInterest'
 import {Box, useMediaQuery} from '@mui/material'
 import {InterestedPosts} from '../widgets/InterestedPosts'
 import {Advert} from '../widgets/Advert'
+import {Friendwidget} from '../widgets/Friendswidget'
 export default function  HomePage (){
 let nonmobile=useMediaQuery('(min-width:1000px)')
 
@@ -42,7 +43,8 @@ mt={nonmobile?undefined:'2rem'}
 flexBasis={nonmobile?'26%':undefined}
 >
 <Advert/>
-    
+<Box mt='2rem'/>
+    <Friendwidget/>
     </Box>)
 }
 
