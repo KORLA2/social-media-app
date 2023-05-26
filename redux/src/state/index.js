@@ -2,7 +2,8 @@ import {createSlice} from '@reduxjs/toolkit'
 let initialState={
 mode:'light',
 user:null,
-posts:[]
+posts:[],
+
 
 }
 export let mySlice=createSlice({

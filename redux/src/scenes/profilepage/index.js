@@ -1,7 +1,7 @@
 
 import Navbar from '../navbar/index'
 import Widgets from '../widgets/index'
-import {UserInterest} from '../widgets/UserInterest'
+
 import {Box, useMediaQuery} from '@mui/material'
 import {InterestedPosts} from '../widgets/InterestedPosts'
 
