@@ -10,24 +10,36 @@ import { AttachFileOutlined, EditOutlined,MoreHorizOutlined, GifBoxOutlined, Ima
 export let UserInterest=()=>{
 
     let {palette}=useTheme();
+    let postID=  uuid().split('-').join('');s
+    let  [image,setimage]=useState(null);
     let nonmobile=useMediaQuery('(min-width:1000px)')
-let [image,setimage]=useState(null);
-let [Description,setDescription]=useState('');
+let [data,setdata]=useState({
+    UserId:localStorage.getItem('unique'),
+    Likes:0,
+    Comments:'{}'
+    
+});
+
 let mediumMain=palette.neutral?.mediumMain;
 let medium=palette.neutral?.main;
 let background=palette.background?.alt;
 let primary=palette.primary?.main;
-console.log(image)
+
 let neutral=palette.neutral?.light;
 
 
-let Post=()=>{
-
-    let  promise= storage.createFile('6472167a116ba1ed2323',uuid(),image);
-    promise.then(
-        function(res){console.log('uccesfully Image Uploaded',res)},
-        function(err){console.log('uccesfully Image Uploaded',err)},
-    )
+let Post=async()=>{
+    
+  let promise=database.createDocument('6470905eda50ef893bdb','6471f8d937a5db1db18e',postID,data)
+promise.then((res)=>{
+    
+    console.log(res,'posted successfully')
+    // database.
+},(err)=>{
+    
+    console.log(err,'Failed to post')
+    
+})
 
 }
 
@@ -50,7 +62,7 @@ gap='1.5rem'
         borderRadius:'2rem',
         width:'100%'
     }}
-    onChange={(e)=>{setDescription(e.target.value)}}
+    // onChange={(e)=>{setDescription(e.target.value)}}
     placeholder='Whats in your mind ...'
     />
 </FlexBetween>

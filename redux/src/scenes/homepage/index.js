@@ -28,7 +28,7 @@ pro.then(
 
 }
 useEffect(()=>{
-fetch()
+// fetch()
 
 },[])
 
