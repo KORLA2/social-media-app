@@ -21,13 +21,16 @@ console.log(image)
 let neutral=palette.neutral?.light;
 
 
-let Post=()=>{
+let Post=async()=>{
+try{
+    
+let response =await  storage.getFile('6472167a116ba1ed2323','2c460081-dfa6-4f11-b1f7-a3fcd60e7d9e')
+console.log(response)
 
-    let  promise= storage.createFile('6472167a116ba1ed2323',uuid(),image);
-    promise.then(
-        function(res){console.log('uccesfully Image Uploaded',res)},
-        function(err){console.log('uccesfully Image Uploaded',err)},
-    )
+}
+catch(err){
+    console.log(err)
+}
 
 }
 
