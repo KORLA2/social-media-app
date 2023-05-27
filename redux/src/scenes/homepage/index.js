@@ -1,12 +1,17 @@
 import Navbar from '../navbar/index'
 import Widgets from '../widgets/index'
+import {useEffect} from 'react'
 import {UserInterest} from '../widgets/UserInterest'
 import {Box, useMediaQuery} from '@mui/material'
+import {account} from '../loginpage/Appwrite'
+import {setUser} from '../../state/index'
 import {InterestedPosts} from '../widgets/InterestedPosts'
 import {Advert} from '../widgets/Advert'
 import {Friendwidget} from '../widgets/Friendswidget'
+import { useSelector } from 'react-redux'
 export default function  HomePage (){
 let nonmobile=useMediaQuery('(min-width:1000px)')
+
 
 return (
 <Box>

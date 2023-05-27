@@ -2,34 +2,43 @@ import { Box,useTheme,Typography, Button, useMediaQuery, IconButton } from "@mui
 import {account,database} from './Appwrite'
 import {EditOutlined ,Facebook,Google,LinkedIn, NavigateBefore} from "@mui/icons-material";
 import {useNavigate} from 'react-router-dom'
-
+import {setUser} from '../../state/index'
 import { useState } from "react";
 import Dropzone from "react-dropzone";
 import { FlexBetween } from "../../components/FlexBetween";
 import {InputBase} from '@mui/material'
 import {v4 as uuid} from 'uuid'
+import { useDispatch } from "react-redux";
 export default function  LoginPage (){
     let {palette}=useTheme();
     let background=palette.background.alt
     let nonmobile=useMediaQuery('(min-width:1000px)')
     let neutral=palette?.neutral?.light
+    let unique=  uuid().split('-').join('')
 let [image,setimage]=useState(0)
 let [SignUp,setSignUp]=useState(0)
+let dispatch=useDispatch()
 let navigate=useNavigate();
     let primary=palette.primary.light;
 let [user,setuser]=useState({
-UserID:uuid().split('-').join(''),    
+    Mail:'',
+    Password:'',
 Name:'',
+City:'',
 Occupation:'',
-Mail:'',
-Password:'',
-City:''
 })
+
+
 let Login=async (e)=>{
     try{
 
-        let promise=await account.createEmailSession(user.Mail,user.Password)
-        console.log('SUccess')
+         let promise= await database.getDocument(
+            '6470905eda50ef893bdb',
+        '6470906723f0b50c18db',
+       localStorage.getItem('unique'),
+         )
+        console.log('SUccess',promise)
+        
         navigate('/home')
     }
 catch(err){
@@ -43,21 +52,22 @@ catch(err){
 
 
 let Register=async (e)=>{
-   let promise= account.create(
-        user.UserID,
-        user.Mail,
-     user.Name,
-     user.Occupation,
-     user.City,
-
-     user.Password
+   let promise= database.createDocument(
+      
+    '6470905eda50ef893bdb',
+    '6470906723f0b50c18db',
+   unique,
+    user
         );
 
         promise.then(
 
             function(res){
-              console.log(res,'successfully created')
+              console.log(res,user,'successfully created')
+          
               setSignUp(0);
+              localStorage.setItem('unique',unique)
+              localStorage.setItem('user',JSON.stringify(user))
             },
             function(err){
                 console.log('Failed to register',err)
@@ -70,6 +80,8 @@ let Register=async (e)=>{
 return (
 
    <Box>
+    <FlexBetween gap='1.5rem'>
+<Box/>
 <Box
 width='100%'
 p='1rem 6%'
@@ -99,6 +111,9 @@ sx={{
  
 
     </Box>
+<Box/>
+
+    </FlexBetween>
 
 <Box
 width='100%'

@@ -2,14 +2,20 @@ import {FlexBetween} from '../../components/FlexBetween'
 import {Widgetwrap} from '../../components/widgets'
 import { useTheme,Divider,Box,Typography } from "@mui/material";
 import { Image } from "../../components/image";
+import { useEffect,useState } from 'react';
 import { ManageAccounts ,LocationOnOutlined,LinkedIn,EditOutlined,Twitter,WorkOutlineOutlined} from "@mui/icons-material";
 export  default function Widgets(){
-    let name='Korla Goutham';
 let {palette}=useTheme()
 let dark=palette.background?.dark;    
 let primarylight=palette.primary?.light; 
 let medium=palette.neutral?.medium   
-let main=palette.neutral?.main   
+let main=palette.neutral?.main 
+let [user,setUser]=useState('');
+useEffect(()=>{
+setUser(JSON.parse(localStorage.getItem('user')))
+
+},[])
+
 return (
 
         <Widgetwrap>
@@ -32,7 +38,7 @@ sx={{
 fontWeight={500}
 
 >
-{name}
+{user?.Name}
 </Typography>
 <Typography  color={medium}>
    10 Friends
@@ -52,14 +58,14 @@ fontWeight={500}
 
 <LocationOnOutlined color={medium}/>
 <Typography color={main}>
-    Hyderabad
+    {user?.City}
 </Typography>
     </Box>
     <Box display='flex' alignItems='center' gap='1rem'>
 <WorkOutlineOutlined color={medium}/>
 <Typography color={main}>
 
-  DevOps Engineer
+  {user?.Occupation}
 </Typography>
         </Box>
 

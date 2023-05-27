@@ -20,7 +20,9 @@ export let mySlice=createSlice({
             state.user.friends=action.payload.friends
         }
     ,
-
+setUser:(state,action)=>{
+state.user=action.payload.user;
+},
     setPosts:(state,action)=>{
         state.posts=action.payload.posts
     },
@@ -35,5 +37,6 @@ state.posts=update
     } 
 })
 
-export let {setMode,setPost,setFriends,setPosts}=mySlice.actions;
+export let {setMode,setPost,setFriends,setPosts,setUser}=mySlice.actions;
+
 export default mySlice.reducer
