@@ -1,21 +1,37 @@
 import Dropzone from 'react-dropzone'
 import {useState} from 'react'
+import {storage,database} from  '../Appwrite/Appwrite'
 import { InputBase,useTheme,Button,Box ,Typography,Divider, useMediaQuery} from '@mui/material'
 import {Image} from '../../components/image'
 import {FlexBetween} from '../../components/FlexBetween'
 import {Widgetwrap} from '../../components/widgets'
+import {v4 as uuid} from 'uuid'
 import { AttachFileOutlined, EditOutlined,MoreHorizOutlined, GifBoxOutlined, ImageOutlined, MicOutlined } from '@mui/icons-material'
 export let UserInterest=()=>{
 
     let {palette}=useTheme();
     let nonmobile=useMediaQuery('(min-width:1000px)')
 let [image,setimage]=useState(null);
+let [Description,setDescription]=useState('');
 let mediumMain=palette.neutral?.mediumMain;
 let medium=palette.neutral?.main;
 let background=palette.background?.alt;
 let primary=palette.primary?.main;
 console.log(image)
 let neutral=palette.neutral?.light;
+
+
+let Post=()=>{
+
+    let  promise= storage.createFile('6472167a116ba1ed2323',uuid(),image);
+    promise.then(
+        function(res){console.log('uccesfully Image Uploaded',res)},
+        function(err){console.log('uccesfully Image Uploaded',err)},
+    )
+
+}
+
+
 
     return (
         <Widgetwrap>
@@ -34,6 +50,7 @@ gap='1.5rem'
         borderRadius:'2rem',
         width:'100%'
     }}
+    onChange={(e)=>{setDescription(e.target.value)}}
     placeholder='Whats in your mind ...'
     />
 </FlexBetween>
@@ -156,9 +173,10 @@ Add Audio
 }
 <Button
 sx={{background:background,color:primary,borderRadius:'3rem'}}
-
+onClick={Post}
 >
     POST
+
 </Button>
     </FlexBetween>
 

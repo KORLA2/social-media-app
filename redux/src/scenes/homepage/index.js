@@ -3,7 +3,7 @@ import Widgets from '../widgets/index'
 import {useEffect} from 'react'
 import {UserInterest} from '../widgets/UserInterest'
 import {Box, useMediaQuery} from '@mui/material'
-import {account} from '../loginpage/Appwrite'
+import {database} from '../Appwrite/Appwrite'
 import {setUser} from '../../state/index'
 import {InterestedPosts} from '../widgets/InterestedPosts'
 import {Advert} from '../widgets/Advert'
@@ -11,6 +11,27 @@ import {Friendwidget} from '../widgets/Friendswidget'
 import { useSelector } from 'react-redux'
 export default function  HomePage (){
 let nonmobile=useMediaQuery('(min-width:1000px)')
+
+
+let fetch=async()=>{
+
+let pro=database.getDocument('6470905eda50ef893bdb','6471f8d937a5db1db18e','6471fe2c30f44cac59bb')
+
+pro.then(
+    function(res){
+        console.log(res)
+    },
+    function(err){
+        console.log(err)
+    }
+)
+
+}
+useEffect(()=>{
+fetch()
+
+},[])
+
 
 
 return (

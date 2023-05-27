@@ -1,14 +1,14 @@
 import { Box,useTheme,Typography, Button, useMediaQuery, IconButton } from "@mui/material"
-import {account,database} from './Appwrite'
-import {EditOutlined ,Facebook,Google,LinkedIn, NavigateBefore} from "@mui/icons-material";
+import {account,database} from '../Appwrite/Appwrite'
+import {DarkMode,LightMode, EditOutlined ,Facebook,Google,LinkedIn, NavigateBefore} from "@mui/icons-material";
 import {useNavigate} from 'react-router-dom'
-import {setUser} from '../../state/index'
+import {setMode} from '../../state/index'
 import { useState } from "react";
 import Dropzone from "react-dropzone";
 import { FlexBetween } from "../../components/FlexBetween";
 import {InputBase} from '@mui/material'
 import {v4 as uuid} from 'uuid'
-import { useDispatch } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 export default function  LoginPage (){
     let {palette}=useTheme();
     let background=palette.background.alt
@@ -32,11 +32,9 @@ Occupation:'',
 let Login=async (e)=>{
     try{
 
-         let promise= await database.getDocument(
-            '6470905eda50ef893bdb',
-        '6470906723f0b50c18db',
-       localStorage.getItem('unique'),
-         )
+         let promise= await account.createEmailSession(user.Mail,user.Password) 
+
+         
         console.log('SUccess',promise)
         
         navigate('/home')
@@ -52,7 +50,7 @@ catch(err){
 
 
 let Register=async (e)=>{
-   let promise= database.createDocument(
+   let promise=database.createDocument(
       
     '6470905eda50ef893bdb',
     '6470906723f0b50c18db',
@@ -65,9 +63,20 @@ let Register=async (e)=>{
             function(res){
               console.log(res,user,'successfully created')
           
-              setSignUp(0);
               localStorage.setItem('unique',unique)
               localStorage.setItem('user',JSON.stringify(user))
+        
+        
+let auth=account.create(localStorage.getItem('unique'),user.Mail,user.Password)
+
+auth.then(
+    function(res){console.log(res,'success in auth')},
+    function(err){console.log(err,'error in auth')},
+)
+setSignUp(0);
+
+        
+        
             },
             function(err){
                 console.log('Failed to register',err)
@@ -75,16 +84,19 @@ let Register=async (e)=>{
         )
 
 
+
+
 }
+let mode=useSelector(state=>state.mode)
 
 return (
 
    <Box>
-    <FlexBetween gap='1.5rem'>
+    <FlexBetween gap='1rem' alignItems='center'>
 <Box/>
 <Box
-width='100%'
-p='1rem 6%'
+// width='100%'
+// p='1rem 6%'
 background={background}
 textAlign='center'
 >
@@ -111,7 +123,20 @@ sx={{
  
 
     </Box>
-<Box/>
+<Box>
+<IconButton onClick={()=>{dispatch(setMode())}}>
+
+{
+   mode==='dark'?
+    <DarkMode
+    sx={{fontSize:'25px'}}
+    />:<LightMode
+    sx={{fontSize:'25px'}}
+    
+    />
+}
+    </IconButton>
+</Box>
 
     </FlexBetween>
 
