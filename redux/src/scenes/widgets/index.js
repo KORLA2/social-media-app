@@ -2,18 +2,33 @@ import {FlexBetween} from '../../components/FlexBetween'
 import {Widgetwrap} from '../../components/widgets'
 import { useTheme,Divider,Box,Typography } from "@mui/material";
 import { Image } from "../../components/image";
+import {database} from '../Appwrite/Appwrite'
 import { useEffect,useState } from 'react';
+import {setUser} from '../../state/index'
 import { ManageAccounts ,LocationOnOutlined,LinkedIn,EditOutlined,Twitter,WorkOutlineOutlined} from "@mui/icons-material";
+import { useSelector,useDispatch } from 'react-redux';
 export  default function Widgets(){
 let {palette}=useTheme()
 let dark=palette.background?.dark;    
 let primarylight=palette.primary?.light; 
 let medium=palette.neutral?.medium   
 let main=palette.neutral?.main 
-let [user,setUser]=useState('');
+let user=useSelector(state=>state.user)
+let dispatch=useDispatch();
 useEffect(()=>{
-setUser(JSON.parse(localStorage.getItem('user')))
-
+ 
+ let promise=database.getDocument('6470905eda50ef893bdb',
+    '6470906723f0b50c18db',
+localStorage.getItem('unique')
+    
+    )
+    promise.then(function(res){
+        let {Mail,Password,Name,City,Occupation,Friends,posts}=res;
+    dispatch(setUser({user:{Mail,Password,Name,City,Occupation,Friends,posts}}))
+    },
+    function(err){console.log(err)}
+    )
+// 
 },[])
 
 return (

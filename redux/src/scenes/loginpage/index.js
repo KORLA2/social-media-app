@@ -34,8 +34,8 @@ let Login=async (e)=>{
 
          let promise= await account.createEmailSession(user.Mail,user.Password) 
 
-         
-        console.log('SUccess',promise)
+         localStorage.setItem('unique',promise.userId)
+          console.log('SUccess',promise)
         
         navigate('/home')
     }
@@ -63,11 +63,9 @@ let Register=async (e)=>{
             function(res){
               console.log(res,user,'successfully created')
           
-              localStorage.setItem('unique',unique)
-              localStorage.setItem('user',JSON.stringify(user))
+          
         
-        
-let auth=account.create(localStorage.getItem('unique'),user.Mail,user.Password)
+let auth=account.create(unique,user.Mail,user.Password)
 
 auth.then(
     function(res){console.log(res,'success in auth')},

@@ -6,41 +6,69 @@ import {Image} from '../../components/image'
 import {FlexBetween} from '../../components/FlexBetween'
 import {Widgetwrap} from '../../components/widgets'
 import {v4 as uuid} from 'uuid'
+import {useNavigate} from 'react-router-dom'
+import {setPost} from '../../state/index'
+import {useSelector,useDispatch} from 'react-redux'
+import {useEffect} from 'react'
 import { AttachFileOutlined, EditOutlined,MoreHorizOutlined, GifBoxOutlined, ImageOutlined, MicOutlined } from '@mui/icons-material'
 export let UserInterest=()=>{
-
+let [image,setimage]=useState(null);
     let {palette}=useTheme();
-    let postID=  uuid().split('-').join('');s
-    let  [image,setimage]=useState(null);
+    let dispatch=useDispatch();
+    let user=useSelector(state=>state.user)
+    let postID=  uuid().split('-').join('');
     let nonmobile=useMediaQuery('(min-width:1000px)')
 let [data,setdata]=useState({
     UserId:localStorage.getItem('unique'),
     Likes:0,
-    Comments:'{}'
-    
+    Comments:'{}',
+    Description:'',
+    Media:postID
 });
-
+let navigate=useNavigate();
 let mediumMain=palette.neutral?.mediumMain;
 let medium=palette.neutral?.main;
 let background=palette.background?.alt;
 let primary=palette.primary?.main;
 
 let neutral=palette.neutral?.light;
-
+useEffect(()=>{
+        
+    async function  updateuser(){
+    if(user!==null){
+        
+    try{
+          console.log(user)
+        let res=await database.updateDocument('6470905eda50ef893bdb','6470906723f0b50c18db',localStorage.getItem('unique'),user)
+     console.log('success in user data base',res)
+    
+    }
+   catch(err){console.log('failed in user',err)}
+    }
+    }
+    updateuser();
+    
+},[user])
 
 let Post=async()=>{
     
-  let promise=database.createDocument('6470905eda50ef893bdb','6471f8d937a5db1db18e',postID,data)
-promise.then((res)=>{
+ try{ 
+  let res= await storage.createFile('6472167a116ba1ed2323',postID,image)
+     console.log('success in image',res)
+     try{
+         
+     let res=await database.createDocument('6470905eda50ef893bdb','6471f8d937a5db1db18e',postID,data)
+     console.log('success in post data base',res)
+    dispatch(setPost({post:postID}))
     
-    console.log(res,'posted successfully')
-    // database.
-},(err)=>{
-    
-    console.log(err,'Failed to post')
-    
-})
 
+     }
+     catch(err){console.log('failed in database',err)}
+ }
+ catch(err){console.log('failed in image',err)}
+//   navigate(0)
+dispatch(setPost({post:"1234"}))
+console.log(user)
 }
 
 
@@ -62,7 +90,7 @@ gap='1.5rem'
         borderRadius:'2rem',
         width:'100%'
     }}
-    // onChange={(e)=>{setDescription(e.target.value)}}
+    onChange={(e)=>{setdata({...data,Description:e.target.value})}}
     placeholder='Whats in your mind ...'
     />
 </FlexBetween>
