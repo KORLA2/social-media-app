@@ -28,13 +28,12 @@ state.user=action.payload.user;
     },
 
     setPost:(state,action)=>{
-let update=state.posts.map(post=>{
-    if(post._id===action.payload.post._id)return action.payload.post;
-    return post;
-});
-state.posts=update
+        console.log('Iam happy wow')
+        
+   state.user.posts=[...state.user.posts,action.payload.post]
+
     }
-    } 
+    } ,
 })
 
 export let {setMode,setPost,setFriends,setPosts,setUser}=mySlice.actions;
