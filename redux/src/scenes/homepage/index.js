@@ -1,6 +1,6 @@
 import Navbar from '../navbar/index'
 import Widgets from '../widgets/index'
-import {useEffect} from 'react'
+import {useEffect,useState} from 'react'
 import {UserInterest} from '../widgets/UserInterest'
 import {Box, useMediaQuery} from '@mui/material'
 import {database} from '../Appwrite/Appwrite'
@@ -11,16 +11,18 @@ import {Friendwidget} from '../widgets/Friendswidget'
 import { useSelector } from 'react-redux'
 export default function  HomePage (){
 let nonmobile=useMediaQuery('(min-width:1000px)')
-
-
+let [posts,setposts]=useState([])
 let fetch=async()=>{
 
-let pro=database.getDocument('6470905eda50ef893bdb','6471f8d937a5db1db18e','6471fe2c30f44cac59bb')
+let pro=database.listDocuments('6470905eda50ef893bdb','6471f8d937a5db1db18e')
 
 pro.then(
     function(res){
-        console.log(res)
+        
+        setposts(res.documents)
+    
     },
+    
     function(err){
         console.log(err)
     }
@@ -28,7 +30,7 @@ pro.then(
 
 }
 useEffect(()=>{
-// fetch()
+fetch()
 
 },[])
 
@@ -60,7 +62,8 @@ mt={nonmobile?undefined:'2rem'}
 >
 <UserInterest/>
 
-    <InterestedPosts/>
+    <InterestedPosts posts={posts}/>
+    
     </Box>
   {
     nonmobile&&(

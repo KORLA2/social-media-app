@@ -3,12 +3,31 @@ import { AccountTreeOutlined } from '@mui/icons-material'
 import {FlexBetween} from './FlexBetween'
 import { useTheme,Box,Typography } from '@mui/material'
 import { Image } from './image'
-export let  Friend=({Name,Profession})=>{
+import {useState,useEffect} from 'react'
+import { database } from '../scenes/Appwrite/Appwrite'
+export let  Friend=({UserId})=>{
 let {palette}=useTheme()
-    
+    let [User,setUser]=useState({});
 let main=palette.neutral?.main;
 let medium=palette.neutral?.medium
 let primarylight=palette.primary?.light;
+useEffect(()=>{
+  async function fetchposts(){
+   if(UserId){
+      
+    try{
+      let res=  await database.getDocument('6470905eda50ef893bdb','6470906723f0b50c18db',UserId)
+        setUser({Name:res.Name,Occupation:res.Occupation})
+    }
+   
+   catch(err){
+       console.log(err,'failed')
+   }
+   }
+  }
+   fetchposts();  
+},[])
+
 return(
     <FlexBetween>
     <FlexBetween gap='1rem'>
@@ -21,10 +40,10 @@ sx={{"&:hover":{
     cursor:'pointer'
 }}}
 >
-{Name}
+{User?.Name}
     </Typography >
     <Typography color={medium} fontSize='0.75rem'>
-{Profession}
+{User?.Occupation}
     </Typography >
     </Box>
     </FlexBetween>
