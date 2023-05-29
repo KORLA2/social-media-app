@@ -47,7 +47,6 @@ useEffect(()=>{
     }
     }
     updateuser();
-    
 },[user])
 
 let Post=async()=>{

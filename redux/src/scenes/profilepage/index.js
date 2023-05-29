@@ -1,13 +1,34 @@
 
 import Navbar from '../navbar/index'
 import Widgets from '../widgets/index'
-
+import {database} from '../Appwrite/Appwrite'
 import {Box, useMediaQuery} from '@mui/material'
-import {InterestedPosts} from '../widgets/InterestedPosts'
-
+import {ProfilePosts} from './ProfilePosts'
+import {useParams} from 'react-router-dom'
 import {Friendwidget} from '../widgets/Friendswidget'
+import { useEffect, useState } from 'react'
 export default function  ProfilePage (){
     let nonmobile=useMediaQuery('(min-width:1000px)')
+    let {UserId}=useParams()
+    let [posts,setposts]=useState([])
+    
+    useEffect(()=>{
+        async function fetchposts(){
+            if(UserId){
+       try{
+           
+           let res= await database.getDocument('6470905eda50ef893bdb','6470906723f0b50c18db',UserId)
+  setposts(res.posts)
+        
+       }
+       catch(err){console.log(err,'failed')}
+            
+        }
+        }
+        fetchposts();
+        
+    },[])
+    
 return (
 
     <Box>
@@ -33,12 +54,18 @@ flexBasis={nonmobile?'26%':undefined}
 
     </Box>
 
-    <Box 
+<Box 
 flexBasis={nonmobile?'42%':undefined}
 mt={nonmobile?undefined:'2rem'}
 >
 
-  <InterestedPosts/>
+{
+    posts?.map(e=>
+        
+  <ProfilePosts postID={e}/>
+  
+    )
+}  
     </Box>
  
 </Box>

@@ -5,15 +5,19 @@ import image from '../../components/Hero.png'
 import { FlexBetween } from "../../components/FlexBetween";
 import { ChatBubbleOutline, FavoriteOutlined, ShareOutlined } from "@mui/icons-material";
 import { useState } from "react";
-export let Post=({Name,Likes,Comments ,description,Profession,Mycomments,Location})=>{
+export let Post=({UserId,Comments,Likes,Description,Media,isProfile})=>{
 let {palette}=useTheme()
 let main=palette.neutral?.main;
+
+
 let [IsComments,setIsComments]=useState(0)
 return (
 
     <Widgetwrap mt='0.5rem'>
         
-<Friend Name={Name} Profession={Profession}/>
+  { !isProfile&&((<Friend UserId={UserId}/>))
+}
+
         <Box
         mt='0.5rem'
         >
@@ -21,7 +25,7 @@ return (
            mt='1rem'
            >
 
-{description}
+  {Description}
            </Typography>
 
 <img width='100%'  height='auto' src={image} style={{borderRadius:'0.75rem',marginTop:'0.75rem'}}/>
@@ -42,7 +46,7 @@ return (
 
     <ChatBubbleOutline/>
     </IconButton>
-    {Comments}
+    {Comments?.length}
 </FlexBetween>
             </FlexBetween>
             <IconButton>
@@ -55,7 +59,7 @@ return (
 
            {
 
-            Mycomments?.map((e,idx)=>(
+            Comments?.map((e,idx)=>(
                <Box key={idx}>
                 <Typography color={main} m='0.5rem 0' pl='0.5rem'>
                    {e}
