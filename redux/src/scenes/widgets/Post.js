@@ -8,7 +8,7 @@ import { useState } from "react";
 export let Post=({UserId,Comments,Likes,Description,Media,isProfile})=>{
 let {palette}=useTheme()
 let main=palette.neutral?.main;
-
+console.log(Comments)
 
 let [IsComments,setIsComments]=useState(0)
 return (

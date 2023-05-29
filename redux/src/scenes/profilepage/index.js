@@ -9,15 +9,15 @@ import {Friendwidget} from '../widgets/Friendswidget'
 import { useEffect, useState } from 'react'
 export default function  ProfilePage (){
     let nonmobile=useMediaQuery('(min-width:1000px)')
-    let {UserId}=useParams()
+    let {userID}=useParams()
     let [posts,setposts]=useState([])
-    
+    console.log(posts)
     useEffect(()=>{
         async function fetchposts(){
-            if(UserId){
+            if(userID){
        try{
            
-           let res= await database.getDocument('6470905eda50ef893bdb','6470906723f0b50c18db',UserId)
+           let res= await database.getDocument('6470905eda50ef893bdb','6470906723f0b50c18db',userID)
   setposts(res.posts)
         
        }
