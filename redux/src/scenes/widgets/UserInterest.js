@@ -21,9 +21,10 @@ let [image,setimage]=useState(null);
 let [data,setdata]=useState({
     UserId:localStorage.getItem('unique'),
     Likes:0,
-    Comments:'{}',
+   
     Description:'',
-    Media:postID
+    Media:postID,
+     Comments:[],
 });
 let navigate=useNavigate();
 let mediumMain=palette.neutral?.mediumMain;
@@ -65,9 +66,8 @@ let Post=async()=>{
      catch(err){console.log('failed in database',err)}
  }
  catch(err){console.log('failed in image',err)}
-//   navigate(0)
-dispatch(setPost({post:"1234"}))
-console.log(user)
+  navigate(0)
+
 }
 
 

@@ -27,8 +27,9 @@ localStorage.getItem('unique')
     promise.then(function(res){
         let {Mail,Password,Name,City,Occupation,Friends,posts}=res;
     dispatch(setUser({user:{Mail,Password,Name,City,Occupation,Friends,posts}}))
+    console.log(res)
     },
-    function(err){console.log(err)}
+    function(err){console.log(err,'failed to fteech')}
     )
 // 
 },[])
