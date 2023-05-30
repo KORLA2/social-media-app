@@ -3,7 +3,7 @@ import {Widgetwrap} from '../../components/widgets'
 import { useTheme,Divider,Box,Typography } from "@mui/material";
 import { Image } from "../../components/image";
 import {database} from '../Appwrite/Appwrite'
-import {useNavigate} from 'react-router-dom'
+import {useNavigate,useParams} from 'react-router-dom'
 import { useEffect,useState } from 'react';
 import {setUser} from '../../state/index'
 import { ManageAccounts ,LocationOnOutlined,LinkedIn,EditOutlined,Twitter,WorkOutlineOutlined} from "@mui/icons-material";
@@ -14,30 +14,17 @@ let dark=palette.background?.dark;
 let primarylight=palette.primary?.light; 
 let medium=palette.neutral?.medium   
 let main=palette.neutral?.main 
-let user=useSelector(state=>state.user)
-let dispatch=useDispatch();
-let navigate=useNavigate()
-useEffect(()=>{
- 
- let promise=database.getDocument('6470905eda50ef893bdb',
-    '6470906723f0b50c18db',
-localStorage.getItem('unique')
-    
-    )
-    promise.then(function(res){
-        let {Mail,Password,Name,City,Occupation,Friends,posts}=res;
-    dispatch(setUser({user:{Mail,Password,Name,City,Occupation,Friends,posts}}))
-    console.log(res)
-    },
-    function(err){console.log(err,'failed to fteech')}
-    )
-// 
-},[])
-
+let {userID}=useParams()
+let user=useSelector((state)=>{
+    if(userID)return state.navigatedUser
+    return state.currentUser
+})
+let navigate=useNavigate();
+console.log(user)
 return (
 
         <Widgetwrap>
-<FlexBetween gap='0.5rem' pb='1.1rem' onClick={()=>{navigate(`/profile/${localStorage.getItem('unique')}`)
+<FlexBetween gap='0.5rem' pb='1.1rem' onClick={()=>{navigate(`/profile/${userID?userID:localStorage.getItem('unique')}`)
 }
 }
 sx={{
@@ -71,7 +58,7 @@ fontWeight={500}
 {user?.Name}
 </Typography>
 <Typography  color={medium}>
-   10 Friends
+   10 Friends 
 </Typography>
 
 </Box>
