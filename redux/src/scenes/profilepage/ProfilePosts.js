@@ -24,10 +24,8 @@ useEffect(()=>{
 
     return (
     
-    <Post Media={post?.Media}    
-Description={post?.Description}
-Comments={post?.Comments}
-Likes={post?.Likes} 
+    <Post 
+    data={post}
 isProfile={1} />
 
     )

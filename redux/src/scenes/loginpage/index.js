@@ -7,6 +7,7 @@ import { useState } from "react";
 import Dropzone from "react-dropzone";
 import { FlexBetween } from "../../components/FlexBetween";
 import {InputBase} from '@mui/material'
+import {useEffect} from 'react'
 import {v4 as uuid} from 'uuid'
 import { useDispatch, useSelector } from "react-redux";
 export default function  LoginPage (){
@@ -27,7 +28,11 @@ Name:'',
 City:'',
 Occupation:'',
 })
-
+useEffect(()=>{
+    if(localStorage.getItem('sessionId'))
+    navigate('/home')
+    
+},[])
 
 let Login=async (e)=>{
     try{
@@ -37,6 +42,7 @@ console.log(user.Mail,user.Password)
         
           console.log('SUccess',promise)
         localStorage.setItem('unique',promise.userId)
+        localStorage.setItem('sessionId',promise.$id)
         navigate('/home')
     }
 catch(err){

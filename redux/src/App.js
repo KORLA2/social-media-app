@@ -1,4 +1,4 @@
-import {BrowserRouter as Router,Routes,Route,Navigate} from 'react-router-dom'
+import {BrowserRouter as Router,Routes,Route,useNavigate} from 'react-router-dom'
 import HomePage from './scenes/homepage/index'
 import LoginPage from './scenes/loginpage/index'
 import ProfilePage from './scenes/profilepage/index'
@@ -14,6 +14,7 @@ useEffect(()=>{
 
     setTheme(createTheme(themeSettings(mode)))
 },[mode])
+    let currentUser=localStorage.getItem('cookieFallback')
     
 return (
 
@@ -21,7 +22,7 @@ return (
     <ThemeProvider theme={Theme}>
 <CssBaseline/>
     <Routes>
-        <Route path='/' element={<LoginPage/>}/>
+        <Route path='/' element={ <LoginPage/>}/>
         <Route path='/home' element={<HomePage/>}/>
         <Route path='/profile/:userID' element={<ProfilePage/>}/>
     </Routes>
