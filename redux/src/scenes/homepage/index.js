@@ -4,14 +4,28 @@ import {useEffect,useState} from 'react'
 import {UserInterest} from '../widgets/UserInterest'
 import {Box, useMediaQuery} from '@mui/material'
 import {database} from '../Appwrite/Appwrite'
-import {setUser} from '../../state/index'
+import {setcurrentUser} from '../../state/index'
 import {InterestedPosts} from '../widgets/InterestedPosts'
 import {Advert} from '../widgets/Advert'
 import {Friendwidget} from '../widgets/Friendswidget'
-import { useSelector } from 'react-redux'
+import { useSelector ,useDispatch} from 'react-redux'
 export default function  HomePage (){
 let nonmobile=useMediaQuery('(min-width:1000px)')
-let [posts,setposts]=useState([])
+let [posts,setposts]=useState([]);
+let dispatch=useDispatch();
+
+ async function fetchCurrentuser(){
+     try{
+       
+    let res= await database.getDocument('6470905eda50ef893bdb','6470906723f0b50c18db',localStorage.getItem('unique'))
+ console.log(res)
+  dispatch(setcurrentUser({user:{Mail:res.Mail,Password:res.Password,Name:res.Name,City:res.City,Occupation:res.Occupation,
+          Friends:res.Friends,posts:res.posts
+          
+          }}))
+     }catch(err){console.log(err,'failed in home page')}
+ }
+
 let fetch=async()=>{
 
 let pro=database.listDocuments('6470905eda50ef893bdb','6471f8d937a5db1db18e')
@@ -31,7 +45,7 @@ pro.then(
 }
 useEffect(()=>{
 fetch()
-
+fetchCurrentuser();
 },[])
 
 
@@ -52,7 +66,7 @@ justifyContent='space-between'
 <Box 
 flexBasis={nonmobile?'26%':undefined}
 >
-<Widgets/>
+<Widgets  />
     
     </Box>
 

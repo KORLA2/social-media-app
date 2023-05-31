@@ -1,9 +1,26 @@
 import {createSlice} from '@reduxjs/toolkit'
 let initialState={
 mode:'light',
-user:null,
-posts:[],
-
+currentUser:{
+    Mail:'',
+    Password:'',
+    Name:'',
+    City:'',
+    Occupation:'',
+    Friends:[],
+    posts:[]
+    
+},
+navigatedUser:{
+    Mail:'',
+    Password:'',
+    Name:'',
+    City:'',
+    Occupation:'',
+    Friends:[],
+    posts:[]
+    
+},
 
 }
 export let mySlice=createSlice({
@@ -17,11 +34,13 @@ export let mySlice=createSlice({
      ,
         setFriends:(state,action)=>{
   
-            state.user.friends=action.payload.friends
+            state.currentUser.Friends=action.payload.friends
         }
     ,
-setUser:(state,action)=>{
-state.user=action.payload.user;
+setcurrentUser:(state,action)=>{
+state.currentUser=action.payload.user;
+},setnavigatedUser:(state,action)=>{
+state.navigatedUser=action.payload.user;
 },
     setPosts:(state,action)=>{
         state.posts=action.payload.posts
@@ -30,12 +49,12 @@ state.user=action.payload.user;
     setPost:(state,action)=>{
         console.log('Iam happy wow')
         
-   state.user.posts=[...state.user.posts,action.payload.post]
+   state.currentUser.posts=[...state.currentUser.posts,action.payload.post]
 
     }
     } ,
 })
 
-export let {setMode,setPost,setFriends,setPosts,setUser}=mySlice.actions;
+export let {setMode,setPost,setFriends,setPosts,setcurrentUser,setnavigatedUser}=mySlice.actions;
 
 export default mySlice.reducer

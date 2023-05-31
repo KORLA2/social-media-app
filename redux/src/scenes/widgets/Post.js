@@ -6,6 +6,9 @@ import { FlexBetween } from "../../components/FlexBetween";
 import { ChatBubbleOutline, FavoriteOutlined, ShareOutlined } from "@mui/icons-material";
 import { useState } from "react";
 export let Post=({UserId,Comments,Likes,Description,Media,isProfile})=>{
+    
+    
+    
 let {palette}=useTheme()
 let main=palette.neutral?.main;
 console.log(Comments)

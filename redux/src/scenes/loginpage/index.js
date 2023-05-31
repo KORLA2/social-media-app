@@ -31,12 +31,12 @@ Occupation:'',
 
 let Login=async (e)=>{
     try{
-
-         let promise= await account.createEmailSession(user.Mail,user.Password) 
+console.log(user.Mail,user.Password)
+      let promise= await account.createEmailSession(user.Mail,user.Password) 
 
         
           console.log('SUccess',promise)
-        
+        localStorage.setItem('unique',promise.userId)
         navigate('/home')
     }
 catch(err){
@@ -69,7 +69,7 @@ let auth=account.create(unique,user.Mail,user.Password)
 
 auth.then(
     function(res){console.log(res,'success in auth')
-     localStorage.setItem('unique',unique)
+    
     },
     function(err){console.log(err,'error in auth')},
 )
