@@ -4,6 +4,8 @@ import {Close, DarkMode,Menu, Help, LightMode, Message, Notifications, Search} f
 import {setMode} from '../../state/index'
 import {useSelector,useDispatch} from 'react-redux'
 import { useState } from "react";
+import {account, database} from '../Appwrite/Appwrite';
+import { useNavigate } from "react-router-dom";
 export default function Navbar(){
 
 
@@ -14,10 +16,23 @@ export default function Navbar(){
     let nonmobile=useMediaQuery('(min-width:1000px)')
     let alt=theme.palette.background?.alt;
     let  dark=theme.palette.neutral?.dark;
+    let navigate=useNavigate()
     let background=theme.palette.background.default;
     let primary=theme.palette.primary.light;
     let neutral=theme.palette?.neutral?.light
+    let currentUser=useSelector(state=>state.currentUser)
 console.log(nonmobile,theme)
+async function LogOut(){
+    try{
+      await  account.deleteSession(localStorage.getItem('sessionId'))
+      localStorage.removeItem('sessionId')
+      navigate('/')
+    }
+    catch(err){console.log(err,'Error In LogOut')}
+    
+}
+
+
 return (
 
     <FlexBetween pading='2rem 6%' backgroundColor={alt} >
@@ -75,7 +90,7 @@ padding='0.1rem 1.5rem'
 <Message   sx={{fontSize:'25px'}} />
 <Notifications   sx={{fontSize:'25px'}} />
 <Help   sx={{fontSize:'25px'}} />
-<FormControl value='Korla Goutham'>
+<FormControl value={currentUser?.Name}>
     <Select
     sx={{
         width:'150px',
@@ -85,12 +100,12 @@ padding='0.1rem 1.5rem'
 
     }}
     input={<InputBase/>}
-    value='Korla Goutham'
+    value = {currentUser?.Name}
     >
-        <MenuItem value="Korla Goutham" >
-        <Typography>Korla Goutham</Typography>
+        <MenuItem value={currentUser?.Name}>
+        <Typography>{currentUser?.Name}</Typography>
         </MenuItem>
-        <MenuItem> 
+        <MenuItem onClick={()=>LogOut()}> 
         Log Out
         </MenuItem>
     </Select>

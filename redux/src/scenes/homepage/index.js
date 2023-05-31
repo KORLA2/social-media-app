@@ -3,8 +3,10 @@ import Widgets from '../widgets/index'
 import {useEffect,useState} from 'react'
 import {UserInterest} from '../widgets/UserInterest'
 import {Box, useMediaQuery} from '@mui/material'
+import {useNavigate} from 'react-router-dom'
 import {database} from '../Appwrite/Appwrite'
 import {setcurrentUser} from '../../state/index'
+
 import {InterestedPosts} from '../widgets/InterestedPosts'
 import {Advert} from '../widgets/Advert'
 import {Friendwidget} from '../widgets/Friendswidget'
@@ -13,7 +15,7 @@ export default function  HomePage (){
 let nonmobile=useMediaQuery('(min-width:1000px)')
 let [posts,setposts]=useState([]);
 let dispatch=useDispatch();
-
+let navigate=useNavigate()
  async function fetchCurrentuser(){
      try{
        
@@ -28,7 +30,7 @@ let dispatch=useDispatch();
 
 let fetch=async()=>{
 
-let pro=database.listDocuments('6470905eda50ef893bdb','6471f8d937a5db1db18e')
+let pro=database.listDocuments('6470905eda50ef893bdb','64760db20226ac09a729')
 
 pro.then(
     function(res){
@@ -44,8 +46,15 @@ pro.then(
 
 }
 useEffect(()=>{
+  
+    if(!localStorage.getItem('sessionId'))
+    navigate('/')
+    else{
+        
 fetch()
 fetchCurrentuser();
+    }    
+    
 },[])
 
 
@@ -87,7 +96,7 @@ flexBasis={nonmobile?'26%':undefined}
 >
 <Advert/>
 <Box mt='2rem'/>
-    <Friendwidget/>
+    <Friendwidget />
     </Box>)
 }
 

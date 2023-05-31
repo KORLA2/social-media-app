@@ -33,6 +33,7 @@ let background=palette.background?.alt;
 let primary=palette.primary?.main;
 
 let neutral=palette.neutral?.light;
+
 useEffect(()=>{
         
     async function  updateuser(){
@@ -47,7 +48,7 @@ useEffect(()=>{
     }
     }
     updateuser();
-},[currentUser])
+},[currentUser.Mail])
 
 let Post=async()=>{
     

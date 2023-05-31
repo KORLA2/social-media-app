@@ -58,7 +58,7 @@ flexBasis={nonmobile?'26%':undefined}
    
 <Widgets />
 <Box mt='2rem'/>
-<Friendwidget/>
+<Friendwidget />
 
 
     </Box>
