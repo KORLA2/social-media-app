@@ -20,11 +20,11 @@ let [image,setimage]=useState(null);
     let nonmobile=useMediaQuery('(min-width:1000px)')
 let [data,setdata]=useState({
     UserId:localStorage.getItem('unique'),
-    Likes:0,
    
     Description:'',
-    Media:postID,
+    Media:'',
      Comments:[],
+    Likes:[],
 });
 let navigate=useNavigate();
 let mediumMain=palette.neutral?.mediumMain;
@@ -35,8 +35,9 @@ let primary=palette.primary?.main;
 let neutral=palette.neutral?.light;
 
 useEffect(()=>{
-        
-    async function  updateuser(){
+    
+     async function  updateuser(){
+         
     if(currentUser.Mail!==''){
         
     try{
@@ -48,25 +49,28 @@ useEffect(()=>{
     }
     }
     updateuser();
-},[currentUser.Mail])
+},[currentUser.posts])
+   
+
 
 let Post=async()=>{
     
  try{ 
+     
+data.Media=postID;
   let res= await storage.createFile('6472167a116ba1ed2323',postID,image)
      console.log('success in image',res)
      try{
          
-     let res=await database.createDocument('6470905eda50ef893bdb','6471f8d937a5db1db18e',postID,data)
+     let res=await database.createDocument('6470905eda50ef893bdb','64760db20226ac09a729',postID,data)
      console.log('success in post data base',res)
-    dispatch(setPost({post:postID}))
-    
 
+dispatch(setPost({post:postID}))
      }
      catch(err){console.log('failed in database',err)}
  }
  catch(err){console.log('failed in image',err)}
-  navigate(0)
+
 
 }
 

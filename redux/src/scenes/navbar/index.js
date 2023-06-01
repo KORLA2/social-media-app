@@ -1,13 +1,12 @@
 import { IconButton,InputBase,Typography ,Box,useTheme,useMediaQuery, MenuItem,FormControl, Select} from "@mui/material";
 import {FlexBetween} from '../../components/FlexBetween'
 import {Close, DarkMode,Menu, Help, LightMode, Message, Notifications, Search} from '@mui/icons-material'
-import {setMode} from '../../state/index'
+import {setMode,setdummyUser} from '../../state/index'
 import {useSelector,useDispatch} from 'react-redux'
 import { useState } from "react";
 import {account, database} from '../Appwrite/Appwrite';
 import { useNavigate } from "react-router-dom";
 export default function Navbar(){
-
 
     let theme=useTheme();
     let dispatch=useDispatch()
@@ -21,11 +20,18 @@ export default function Navbar(){
     let primary=theme.palette.primary.light;
     let neutral=theme.palette?.neutral?.light
     let currentUser=useSelector(state=>state.currentUser)
-console.log(nonmobile,theme)
+console.log(currentUser)
 async function LogOut(){
     try{
       await  account.deleteSession(localStorage.getItem('sessionId'))
       localStorage.removeItem('sessionId')
+    //   dispatch(setdummyUser({user:{   Mail:'',
+    // Password:'',
+    // Name:'',
+    // City:'',
+    // Occupation:'',
+    // Friends:[],
+    // posts:[]}}))
       navigate('/')
     }
     catch(err){console.log(err,'Error In LogOut')}
@@ -86,8 +92,9 @@ padding='0.1rem 1.5rem'
     />
 }
     </IconButton>
-
+<IconButton onClick={()=>navigate('/message')}>
 <Message   sx={{fontSize:'25px'}} />
+</IconButton>
 <Notifications   sx={{fontSize:'25px'}} />
 <Help   sx={{fontSize:'25px'}} />
 <FormControl value={currentUser?.Name}>

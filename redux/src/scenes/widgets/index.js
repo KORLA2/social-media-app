@@ -1,11 +1,12 @@
 import {FlexBetween} from '../../components/FlexBetween'
 import {Widgetwrap} from '../../components/widgets'
-import { useTheme,Divider,Box,Typography } from "@mui/material";
+import { useTheme,Divider,Box,Typography,Button } from "@mui/material";
 import { Image } from "../../components/image";
 import {database} from '../Appwrite/Appwrite'
 import {useNavigate,useParams} from 'react-router-dom'
 import { useEffect,useState } from 'react';
 import {setUser} from '../../state/index'
+import {v4 as uuid} from 'uuid'
 import { ManageAccounts ,LocationOnOutlined,LinkedIn,EditOutlined,Twitter,WorkOutlineOutlined} from "@mui/icons-material";
 import { useSelector,useDispatch } from 'react-redux';
 export  default function Widgets(){
@@ -18,7 +19,20 @@ let {userID}=useParams()
 let user=useSelector((state)=>{
     if(userID)return state.navigatedUser
     return state.currentUser
-})
+});
+
+
+async  function sendFollowRequest(){
+    
+    try{
+    let res=await  database.createDocument('6470905eda50ef893bdb','6478e2c274ce8e6c036f',uuid(),{From:localStorage.getItem('unique'),To:userID})
+console.log(res,'FriendRequest Sent')
+}
+catch(err){
+    console.log(err,'Error in sending Friend Request')
+}
+}
+
 let navigate=useNavigate();
 console.log(user)
 return (
@@ -164,7 +178,15 @@ Number of Post Impressions
 </FlexBetween>
  </Box>
 
+<FlexBetween>
+<Button variant='outlined' onClick={sendFollowRequest}>
+    Follow
+</Button>
+<Button>
+    Message
+</Button>
 
+</FlexBetween>
 </Widgetwrap>
     )
 }
