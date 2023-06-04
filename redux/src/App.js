@@ -27,7 +27,7 @@ return (
         <Route path='/' element={ <LoginPage/>}/>
         <Route path='/home' element={<HomePage/>}/>
         <Route path='/profile/:userID' element={<ProfilePage/>}/>
-        <Route path='/Message/:userID' element={<Message/>}/>
+        <Route path='/Message/:userId?' element={<Message/>}/>
         <Route path='/Notifications' element={<Notifications/>}/>
     </Routes>
     </ThemeProvider>

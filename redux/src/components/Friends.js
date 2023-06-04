@@ -6,7 +6,7 @@ import { Image } from './image'
 import {useNavigate} from 'react-router-dom'
 import {useState,useEffect} from 'react'
 import { database } from '../scenes/Appwrite/Appwrite'
-export let  Friend=({UserId})=>{
+export let  Friend=({UserId,isMessage})=>{
 let {palette}=useTheme()
 let navigate=useNavigate();
     let [User,setUser]=useState({});
@@ -33,7 +33,7 @@ console.log(UserId)
 
 return(
     <FlexBetween
-    onClick={()=>navigate(`/profile/${UserId}`)}
+    onClick={()=>navigate(isMessage?`/Message/${UserId}`:`/profile/${UserId}`)}
     sx={{
         "&:hover":{
             cursor:'pointer'

@@ -20,12 +20,12 @@ let user=useSelector((state)=>{
     if(userID)return state.navigatedUser
     return state.currentUser
 });
-
+let currentUser=useSelector(state=>state.currentUser)
 
 async  function sendFollowRequest(){
     
     try{
-    let res=await  database.createDocument('6470905eda50ef893bdb','6478e2c274ce8e6c036f',uuid(),{From:localStorage.getItem('unique'),To:userID})
+    let res=await  database.createDocument('6470905eda50ef893bdb','6478e2c274ce8e6c036f',uuid(),{Name:currentUser.Name,ToId:userID,FromId:localStorage.getItem('unique')})
 console.log(res,'FriendRequest Sent')
 }
 catch(err){

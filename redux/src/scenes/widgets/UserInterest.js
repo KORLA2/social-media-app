@@ -31,7 +31,7 @@ let mediumMain=palette.neutral?.mediumMain;
 let medium=palette.neutral?.main;
 let background=palette.background?.alt;
 let primary=palette.primary?.main;
-
+console.log(currentUser)
 let neutral=palette.neutral?.light;
 
 useEffect(()=>{

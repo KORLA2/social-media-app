@@ -1,11 +1,14 @@
-import { IconButton,InputBase,Typography ,Box,useTheme,useMediaQuery, MenuItem,FormControl, Select} from "@mui/material";
+import { IconButton,InputBase,Typography ,Box,useTheme,useMediaQuery, MenuItem,Modal,FormControl, Select} from "@mui/material";
 import {FlexBetween} from '../../components/FlexBetween'
-import {Close, DarkMode,Menu, Help, LightMode, Message, Notifications, Search} from '@mui/icons-material'
+import {Close, DarkMode,Menu, Help, LightMode, Message, Notifications, Search, SentimentNeutralOutlined} from '@mui/icons-material'
 import {setMode,setdummyUser} from '../../state/index'
 import {useSelector,useDispatch} from 'react-redux'
 import { useState } from "react";
-import {account, database} from '../Appwrite/Appwrite';
+import {Friend} from '../../components/Friends'
+
+import {account, database,query} from '../Appwrite/Appwrite';
 import { useNavigate } from "react-router-dom";
+import { Widgetwrap } from "../../components/widgets";
 export default function Navbar(){
 
     let theme=useTheme();
@@ -21,23 +24,38 @@ export default function Navbar(){
     let neutral=theme.palette?.neutral?.light
     let currentUser=useSelector(state=>state.currentUser)
 console.log(currentUser)
+const [open, setOpen] = useState(false);
+  const handleOpen = () => setOpen(true);
+  const handleClose = () => setOpen(false);
+  let [SuggestedUsers,setSuggestedUsers]=useState([]);
 async function LogOut(){
     try{
       await  account.deleteSession(localStorage.getItem('sessionId'))
       localStorage.removeItem('sessionId')
-    //   dispatch(setdummyUser({user:{   Mail:'',
-    // Password:'',
-    // Name:'',
-    // City:'',
-    // Occupation:'',
-    // Friends:[],
-    // posts:[]}}))
+      dispatch(setdummyUser({user:{   Mail:'',
+    Password:'',
+    Name:'',
+    City:'',
+    Occupation:'',
+    Friends:[],
+    posts:[]}}))
       navigate('/')
     }
     catch(err){console.log(err,'Error In LogOut')}
     
 }
-
+async function Suggested(e){
+   try{
+    console.log(e.target.value)
+       
+   let res=await  database.listDocuments('6470905eda50ef893bdb','6470906723f0b50c18db',
+    
+[query.search('Name',e.target.value)
+   ]   )
+    setSuggestedUsers(res.documents)
+   }
+   catch(err){console.log(err)}
+}
 
 return (
 
@@ -59,18 +77,44 @@ sx={{
 </Typography>
 {
     nonmobile&&(
-
+<Box>
    <FlexBetween
    backgroundColor= {neutral}
 gap='3rem'
 padding='0.1rem 1.5rem'
-
+onClick={handleOpen}
    >
-    <InputBase placeholder='Search...' />
+    <InputBase placeholder='Search...' onChange={Suggested}/>
     <IconButton>
         <Search/>
         </IconButton>
     </FlexBetween>
+    
+    {
+        open&&(
+            <Box
+onClick={handleClose}
+            
+        open={open}
+        aria-labelledby="modal-modal-title"
+        aria-describedby="modal-modal-description"
+        sx={{position:'fixed' ,top:'10%',left:0,right:0,bottom:0,backgroundColor:'rgba(0,0,0,0.5)',zIndex:3}}
+      >
+        <Widgetwrap sx={{width:400,position:'absolute',left:'15%',top:'15%'}} >
+          {
+              SuggestedUsers?.map(e=>
+                  
+                  <Friend UserId={e.$id} isMessage={0}/>
+              )
+              
+          }
+          
+        </Widgetwrap>
+      </Box>
+        )
+    }  
+    </Box>
+    
         )
 
 }
@@ -92,10 +136,14 @@ padding='0.1rem 1.5rem'
     />
 }
     </IconButton>
-<IconButton onClick={()=>navigate('/message')}>
+<IconButton onClick={()=>navigate('/Message')}>
 <Message   sx={{fontSize:'25px'}} />
 </IconButton>
+<IconButton onClick={()=>navigate('/Notifications')}>
+
 <Notifications   sx={{fontSize:'25px'}} />
+</IconButton>
+
 <Help   sx={{fontSize:'25px'}} />
 <FormControl value={currentUser?.Name}>
     <Select
@@ -196,3 +244,7 @@ background:background
     </FlexBetween>
 )
 }
+
+
+
+
