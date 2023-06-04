@@ -32,9 +32,9 @@ export let mySlice=createSlice({
             state.mode=state.mode==='dark'?'light':'dark'
         }
      ,
-        setFriends:(state,action)=>{
+        setFriend:(state,action)=>{
   
-            state.currentUser.Friends=action.payload.friends
+            state.currentUser.Friends=[...state.currentUser.Friends,action.payload.friend]
         }
     ,
 setcurrentUser:(state,action)=>{
@@ -42,8 +42,8 @@ state.currentUser=action.payload.user;
 },setnavigatedUser:(state,action)=>{
 state.navigatedUser=action.payload.user;
 },
-    setPosts:(state,action)=>{
-        state.posts=action.payload.posts
+    setdummyUser:(state,action)=>{
+        state.currentUser=action.payload.user
     },
 
     setPost:(state,action)=>{
@@ -55,6 +55,6 @@ state.navigatedUser=action.payload.user;
     } ,
 })
 
-export let {setMode,setPost,setFriends,setPosts,setcurrentUser,setnavigatedUser}=mySlice.actions;
+export let {setMode,setPost,setFriend,setPosts,setcurrentUser,setdummyUser,setnavigatedUser}=mySlice.actions;
 
 export default mySlice.reducer

@@ -4,7 +4,7 @@ import { Typography,Box ,useTheme,Divider} from '@mui/material';
 import { useParams } from 'react-router-dom';
 import { useState } from 'react';
 import { useSelector } from 'react-redux';
-export let Friendwidget=()=>{
+export let Friendwidget=({isMessage})=>{
 
 let {userID}=useParams()
 let user=useSelector(state=>userID?state.navigatedUser:state.currentUser)
@@ -25,7 +25,7 @@ My Friends
  {
      user.Friends?.map(e=>
      <Box >
-     <Friend UserId={e}/>
+     <Friend isMessage = {isMessage} UserId={e}/>
      <Divider/>
      </Box>
      )

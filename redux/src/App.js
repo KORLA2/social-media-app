@@ -2,6 +2,8 @@ import {BrowserRouter as Router,Routes,Route,useNavigate} from 'react-router-dom
 import HomePage from './scenes/homepage/index'
 import LoginPage from './scenes/loginpage/index'
 import ProfilePage from './scenes/profilepage/index'
+import Message from './scenes/Message/index'
+import Notifications from './scenes/Notifications/index'
 import { useState,useEffect } from 'react'
 import {useSelector} from 'react-redux'
 import {ThemeProvider,CssBaseline} from '@mui/material'
@@ -25,6 +27,8 @@ return (
         <Route path='/' element={ <LoginPage/>}/>
         <Route path='/home' element={<HomePage/>}/>
         <Route path='/profile/:userID' element={<ProfilePage/>}/>
+        <Route path='/Message/:userId?' element={<Message/>}/>
+        <Route path='/Notifications' element={<Notifications/>}/>
     </Routes>
     </ThemeProvider>
     </Router>
