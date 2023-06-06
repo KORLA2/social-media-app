@@ -20,7 +20,7 @@ console.log(UserId)
       
     try{
       let res=  await database.getDocument('6470905eda50ef893bdb','6470906723f0b50c18db',UserId)
-        setUser({Name:res.Name,Occupation:res.Occupation})
+        setUser({Name:res.Name,Occupation:res.Occupation, Media:res.Media})
     }
    
    catch(err){
@@ -29,7 +29,7 @@ console.log(UserId)
    }
   }
    fetchposts();  
-},[])
+},[UserId])
 
 return(
     <FlexBetween
@@ -43,7 +43,7 @@ return(
     >
     <FlexBetween gap='1rem'>
 
-<Image/>
+<Image image={User?.Media} />
 <Box>
 <Typography color={main} fontWeight='500'
 sx={{"&:hover":{

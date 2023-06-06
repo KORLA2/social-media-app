@@ -1,8 +1,7 @@
 import {Box} from '@mui/material'
-import image from './Hero.png'
-export let Image =({size='60px'})=>{
+export let Image =({image,size='60px'})=>{
 return(
-    <Box height={size} width={size}>
+    <Box height='auto' width={size}>
 
 <img style={{objectFit:'cover',
 borderRadius:'50%'

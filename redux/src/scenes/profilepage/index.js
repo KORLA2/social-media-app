@@ -16,16 +16,18 @@ export default function  ProfilePage (){
     let  navigate=useNavigate()
     let  dispatch=useDispatch()
     let navigateduser=useSelector(state=>state.navigatedUser)
+    let user=useSelector(state=>state.currentUser)
+    console.log(user)
     useEffect(()=>{
           
         async function fetchposts(){
           
-            if(userID){
+       
+                
        try{
            let res=await database.getDocument('6470905eda50ef893bdb','6470906723f0b50c18db',userID)
-        console.log(res)
           dispatch(setnavigatedUser({user:{Mail:res.Mail,Password:res.Password,Name:res.Name,City:res.City,Occupation:res.Occupation,
-          Friends:res.Friends,posts:res.posts
+          Friends:res.Friends,posts:res.posts,Media:res.Media
      
           }}))
         //   navigate(0)
@@ -33,7 +35,7 @@ export default function  ProfilePage (){
        catch(err){console.log(err,'failed')}
             
         }
-        }
+        
         fetchposts();
         
     },[userID])

@@ -81,7 +81,7 @@ useEffect(()=>{
     updateuser();
 },[currentUser.Friends])
 
-    useEffect(()=>{
+useEffect(()=>{
         
   let unsubs=client.subscribe('databases.6470905eda50ef893bdb.collections.6478e2c274ce8e6c036f.documents',(data)=>{
 if(data.payload.ToId===localStorage.getItem('unique'))

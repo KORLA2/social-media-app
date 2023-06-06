@@ -85,7 +85,7 @@ gap='1.5rem'
 
 >
     
-    <Image/>
+    <Image image={currentUser.Media}/>
     <InputBase 
     sx={{
         p:'1rem 2rem',
