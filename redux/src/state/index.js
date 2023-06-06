@@ -8,8 +8,9 @@ currentUser:{
     City:'',
     Occupation:'',
     Friends:[],
-    posts:[]
-    
+    posts:[],
+    Media:''
+  
 },
 navigatedUser:{
     Mail:'',
@@ -18,8 +19,8 @@ navigatedUser:{
     City:'',
     Occupation:'',
     Friends:[],
-    posts:[]
-    
+    posts:[],
+    Media:''
 },
 
 }
@@ -37,24 +38,25 @@ export let mySlice=createSlice({
             state.currentUser.Friends=[...state.currentUser.Friends,action.payload.friend]
         }
     ,
-setcurrentUser:(state,action)=>{
-state.currentUser=action.payload.user;
-},setnavigatedUser:(state,action)=>{
+
+setnavigatedUser:(state,action)=>{
 state.navigatedUser=action.payload.user;
 },
-    setdummyUser:(state,action)=>{
-        state.currentUser=action.payload.user
-    },
-
+   
     setPost:(state,action)=>{
         console.log('Iam happy wow')
         
    state.currentUser.posts=[...state.currentUser.posts,action.payload.post]
 
-    }
+    },
+    setcurrentUser:(state,action)=>{
+        console.log(action.payload.user)
+        state.currentUser=action.payload.user
+        
+    },
     } ,
 })
 
-export let {setMode,setPost,setFriend,setPosts,setcurrentUser,setdummyUser,setnavigatedUser}=mySlice.actions;
+export let {setMode,setPost,setFriend,setcurrentUser,setnavigatedUser}=mySlice.actions;
 
 export default mySlice.reducer

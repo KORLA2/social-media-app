@@ -2,7 +2,7 @@ import {FlexBetween} from '../../components/FlexBetween'
 import {Widgetwrap} from '../../components/widgets'
 import { useTheme,Divider,Box,Typography,Button } from "@mui/material";
 import { Image } from "../../components/image";
-import {database} from '../Appwrite/Appwrite'
+import {database,query} from '../Appwrite/Appwrite'
 import {useNavigate,useParams} from 'react-router-dom'
 import { useEffect,useState } from 'react';
 import {setUser} from '../../state/index'
@@ -15,23 +15,44 @@ let dark=palette.background?.dark;
 let primarylight=palette.primary?.light; 
 let medium=palette.neutral?.medium   
 let main=palette.neutral?.main 
+let [FriendRequest,setFriendRequest]=useState(0)
 let {userID}=useParams()
 let user=useSelector((state)=>{
     if(userID)return state.navigatedUser
     return state.currentUser
 });
 let currentUser=useSelector(state=>state.currentUser)
-
+let isFriend=currentUser.Friends?.includes(userID)
 async  function sendFollowRequest(){
     
     try{
     let res=await  database.createDocument('6470905eda50ef893bdb','6478e2c274ce8e6c036f',uuid(),{Name:currentUser.Name,ToId:userID,FromId:localStorage.getItem('unique')})
-console.log(res,'FriendRequest Sent')
+      console.log(res,'FriendRequest Sent')
+
 }
 catch(err){
     console.log(err,'Error in sending Friend Request')
 }
 }
+useEffect(()=>{
+   async function isFriendRequestSend(){
+     try{
+         
+         
+      let response=await database.listDocuments('6470905eda50ef893bdb','6478e2c274ce8e6c036f')    
+      
+        let res=response?.documents?.map(e=>
+        e.FromId==localStorage.getItem('unique')&&e.ToId==userID
+        )
+        if(res[0])
+        setFriendRequest(1)
+     }      
+     catch(err){console.log(err,"error while fetching Friend Request Sent or not")}
+    }
+    isFriendRequestSend()
+    
+},[])
+
 
 let navigate=useNavigate();
 console.log(user)
@@ -53,7 +74,7 @@ sx={{
     
 <FlexBetween gap='1rem'>
 
-<Image />
+<Image image={user?.Media}/>
 <Box>
 
 <Typography  
@@ -72,7 +93,7 @@ fontWeight={500}
 {user?.Name}
 </Typography>
 <Typography  color={medium}>
-   10 Friends 
+  {user.Friends?.length} Friends
 </Typography>
 
 </Box>
@@ -178,15 +199,28 @@ Number of Post Impressions
 </FlexBetween>
  </Box>
 
+{
+user.Mail!==currentUser.Mail &&(
 <FlexBetween>
-<Button variant='outlined' onClick={sendFollowRequest}>
-    Follow
-</Button>
-<Button>
-    Message
-</Button>
 
-</FlexBetween>
+{
+    
+!isFriend?
+
+!FriendRequest?<Button variant='outlined'  onClick={()=>{sendFollowRequest();setFriendRequest(1)}}>
+    
+ Follow
+</Button>:
+<Button variant='outlined'>
+    Request Sent
+</Button>
+:<Button variant='outlined'>Following</Button>
+
+}
+<Button variant='outlined' onClick={()=>navigate(`/Message/${userID}`)}  disabled={!isFriend?1:0}> Message </Button>
+    </FlexBetween>
+)}
 </Widgetwrap>
     )
 }
+

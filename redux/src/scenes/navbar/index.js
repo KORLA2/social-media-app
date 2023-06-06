@@ -1,4 +1,4 @@
-import { IconButton,InputBase,Typography ,Box,useTheme,useMediaQuery, MenuItem,Modal,FormControl, Select} from "@mui/material";
+import { IconButton,InputBase,Typography ,Box,useTheme,useMediaQuery, MenuItem,Divider,FormControl, Select} from "@mui/material";
 import {FlexBetween} from '../../components/FlexBetween'
 import {Close, DarkMode,Menu, Help, LightMode, Message, Notifications, Search, SentimentNeutralOutlined} from '@mui/icons-material'
 import {setMode,setdummyUser} from '../../state/index'
@@ -20,7 +20,7 @@ export default function Navbar(){
     let  dark=theme.palette.neutral?.dark;
     let navigate=useNavigate()
     let background=theme.palette.background.default;
-    let primary=theme.palette.primary.light;
+    let primary=theme.palette.primary.dark;
     let neutral=theme.palette?.neutral?.light
     let currentUser=useSelector(state=>state.currentUser)
 console.log(currentUser)
@@ -30,15 +30,11 @@ const [open, setOpen] = useState(false);
   let [SuggestedUsers,setSuggestedUsers]=useState([]);
 async function LogOut(){
     try{
+        let res=await account.get()
+        console.log(res)
       await  account.deleteSession(localStorage.getItem('sessionId'))
       localStorage.removeItem('sessionId')
-      dispatch(setdummyUser({user:{   Mail:'',
-    Password:'',
-    Name:'',
-    City:'',
-    Occupation:'',
-    Friends:[],
-    posts:[]}}))
+    
       navigate('/')
     }
     catch(err){console.log(err,'Error In LogOut')}
@@ -100,11 +96,13 @@ onClick={handleClose}
         aria-describedby="modal-modal-description"
         sx={{position:'fixed' ,top:'10%',left:0,right:0,bottom:0,backgroundColor:'rgba(0,0,0,0.5)',zIndex:3}}
       >
-        <Widgetwrap sx={{width:400,position:'absolute',left:'15%',top:'15%'}} >
+        <Widgetwrap sx={{width:400,position:'absolute',left:'15%',top:'0%'}} >
           {
               SuggestedUsers?.map(e=>
-                  
+                  <Box display='flex' flexDirection='column' gap='0.5rem'>
                   <Friend UserId={e.$id} isMessage={0}/>
+                  <Divider sx={{m:'0.3rem'}}/>
+              </Box>
               )
               
           }
@@ -215,7 +213,7 @@ background:background
 <Message   sx={{fontSize:'25px'}} />
 <Notifications   sx={{fontSize:'25px'}} />
 <Help   sx={{fontSize:'25px'}} />
-<FormControl value='Korla Goutham'>
+<FormControl value={currentUser?.Name}>
     <Select
     sx={{
         width:'150px',
@@ -225,12 +223,12 @@ background:background
 
     }}
     input={<InputBase/>}
-    value='Korla Goutham'
+    value={currentUser?.Name}
     >
-        <MenuItem value="Korla Goutham" >
-        <Typography>Korla Goutham</Typography>
+        <MenuItem value={currentUser?.Name} >
+        <Typography>{currentUser?.Name}</Typography>
         </MenuItem>
-        <MenuItem> 
+        <MenuItem onClick={LogOut}> 
         Log Out
         </MenuItem>
     </Select>

@@ -1,29 +1,48 @@
 import { Widgetwrap } from "../../components/widgets";
 import {Box, IconButton, Divider,Button,TextField, Typography,useTheme} from '@mui/material';
 import { Friend } from "../../components/Friends";
-import image from '../../components/Hero.png'
 import { FlexBetween } from "../../components/FlexBetween";
 import { ChatBubbleOutline, FavoriteOutlined,FavoriteBorderIcon, ShareOutlined, FavoriteBorderOutlined } from "@mui/icons-material";
-import { useState } from "react";
-import { database } from "../Appwrite/Appwrite";
+import { useState ,useEffect} from "react";
+import { database,storage } from "../Appwrite/Appwrite";
 export let Post=({data,isProfile})=>{
     
-    let postDetails={
+    let [postDetails,setpostDetails]=useState({
         UserId:data.UserId,
         Description:data.Description,
         Media:data.Media,
+        Likes:data.Likes,
         Comments:data.Comments,
-        Likes:data.Likes
         
-    };
-   console.log(postDetails)
+    });
+   console.log(data,postDetails)
 let {palette}=useTheme()
 let main=palette?.neutral?.main;
 let primarylight=palette?.primary.light;
 let [isLiked,setisLiked]=useState(0);
 let [IsComments,setIsComments]=useState(0)
 let [Comment,setComment]=useState('')
+let [image,setimage]=useState('')
+useEffect(()=>{
+    
+    async function getuserPost(){
+        try{
+            console.log(data.Media)
+        let image=await storage.getFilePreview('6472167a116ba1ed2323',data.Media)
+      
+      setimage(image.href)
+      console.log(image)
+        }
+        catch(err){
+            console.log(err,'Fetching Image Error in Post')
+        }
+    }
+    getuserPost()
+},[data.Media,postDetails])
+
  let PostLikes= async ()=>{
+   console.log(postDetails)
+    
      let currentUser=localStorage.getItem('unique')
          if(isLiked)
          
@@ -34,9 +53,10 @@ let [Comment,setComment]=useState('')
           let res= await database.updateDocument('6470905eda50ef893bdb','64760db20226ac09a729',data.$id,postDetails);
    
        console.log('Likes Updated')
+           setpostDetails(postDetails)
+     setisLiked(!isLiked)
        }
        catch(err){console.log(err,'failed in likes')}
-     setisLiked(!isLiked)
         
     }
     
@@ -55,7 +75,7 @@ return (
 
     <Widgetwrap mt='0.5rem'>
         
-  { !isProfile&&((<Friend UserId={postDetails?.UserId}/>))
+  { !isProfile&&((<Friend UserId={data?.UserId}/>))
 }
 
         <Box
@@ -65,16 +85,16 @@ return (
            mt='1rem'
            >
 
-  {postDetails?.Description}
+  {data?.Description}
            </Typography>
 
-<img width='100%'  height='auto' src={image} style={{borderRadius:'0.75rem',marginTop:'0.75rem'}}/>
+<img width='100%'  height='auto' src={image} alt='No Image' style={{borderRadius:'0.75rem',marginTop:'0.75rem'}}/>
             </Box>
 
 <FlexBetween gap='0.25rem'>
 <FlexBetween gap='1rem'>
 <FlexBetween gap='0.3rem'>
-<IconButton onClick={()=>PostLikes()}>
+<IconButton onClick={()=>{PostLikes()}}>
 {
  !isLiked?<FavoriteBorderOutlined/>  : 
     <FavoriteOutlined/>
@@ -89,7 +109,7 @@ return (
 
     <ChatBubbleOutline/>
     </IconButton>
-    {postDetails?.Comments?.length}
+    {data?.Comments?.length}
 </FlexBetween>
             </FlexBetween>
             <IconButton>
@@ -116,12 +136,13 @@ return (
 
            {
 
-            postDetails?.Comments?.map((e,idx)=>(
+            data?.Comments?.map((e,idx)=>(
                <Box key={idx}>
                 
                 <Typography color={main} m='0.5rem 0' pl='0.5rem'>
                    {e}
                 </Typography>
+                
                 <Divider/>
 
                     </Box>
