@@ -1,4 +1,4 @@
-import { Box,useTheme,Typography, Button, useMediaQuery, IconButton } from "@mui/material"
+import {CircularProgress, Box,useTheme,Typography, Button, TextField,useMediaQuery, IconButton } from "@mui/material"
 import {DarkMode,LightMode, EditOutlined ,Facebook,Google,LinkedIn, NavigateBefore} from "@mui/icons-material";
 import {useNavigate} from 'react-router-dom'
 import {setMode,setcurrentUser} from '../../state/index'
@@ -10,12 +10,13 @@ import Social from './social-networking.jpg'
 import Dropzone from "react-dropzone";
 import {useAuth} from './Auth'
 import { FlexBetween } from "../../components/FlexBetween";
-import {InputBase} from '@mui/material'
+import {InputBase,Alert} from '@mui/material'
 import {useEffect} from 'react'
 
 import { useDispatch, useSelector } from "react-redux";
 export default function  LoginPage (){
     let {palette}=useTheme();
+   let [alert,showAlert]=useState('')
     let background=palette.background.alt
     let nonmobile=useMediaQuery('(min-width:1000px)')
     let neutral=palette?.neutral?.light
@@ -36,6 +37,9 @@ useEffect(()=>{
     
 },[])
 
+
+
+
 let Login=async (e)=>{
     try{
        setLoading(1)
@@ -45,11 +49,11 @@ await Logined(user)
 navigate('/home')
     }
     catch(err){
+        setLoading(0)
+        showAlert(1)
         console.log(err)
     }
 }
-
-
 
 
 let Register=async (e)=>{
@@ -61,11 +65,26 @@ setSignUp(0)
 
    }
    catch(err){
+       setLoading(0)
+showAlert(1)
         console.log(err)
        
    }
 
 }
+
+let isValid= ()=>{
+    if(SignUp)
+    {
+    if(!user.Mail|| !user.Password|| !user.Occcupation || !image || !user.City ||!user.Name)
+    showAlert(1)
+    else Register()
+        return;
+    }
+  else Login()
+    
+}
+
 let mode=useSelector(state=>state.mode)
 
 return (
@@ -147,31 +166,40 @@ flexDirection='column'
 gap='1.5rem'
 >
     {
+alert&&(<Alert sx={{mb:'1rem'}} severity="error">Check your details try again</Alert>
+)
+}
+    {
         SignUp?(
             <>
 
-<Box backgroundColor={neutral} p='1rem' >
-
-<InputBase placeholder="Email" type='email'  onChange={(e)=>setUser({...user,Mail:e.target.value}) } sx={{width:'100%'}}/>
-    </Box>
 
 <Box backgroundColor={neutral} p='1rem' >
+<TextField placeholder="Email" type='email' label ='Email' required  onChange={(e)=>setUser({...user,Mail:e.target.value}) } sx={{width:'100%',color:primary,
+".MuiInputBase-colorPrimary":{
+    backgroundColor:neutral
+}
 
-<InputBase placeholder="Password"  onChange={(e)=>setUser({...user,Password:e.target.value})} type='password' sx={{width:'100%'}}/>
+}}/>
+    </Box>
+
+<Box backgroundColor={neutral} p='1rem' >
+
+<TextField required placeholder="Password" label='Password'  onChange={(e)=>setUser({...user,Password:e.target.value})} type='password' sx={{width:'100%'}}/>
     </Box>
 
     <Box backgroundColor={neutral} p='1rem' >
 
-<InputBase placeholder="Name"  onChange={(e)=>setUser({...user,Name:e.target.value})} sx={{width:'100%'}}/>
+<TextField placeholder="Name"  label='Name' required   onChange={(e)=>setUser({...user,Name:e.target.value})} sx={{width:'100%'}}/>
     </Box>
     <Box backgroundColor={neutral} p='1rem' >
 
-<InputBase placeholder="City" onChange={(e)=>setUser({...user,City:e.target.value})} sx={{width:'100%'}}/>
+<TextField placeholder="City" label='City' required  onChange={(e)=>setUser({...user,City:e.target.value})} sx={{width:'100%'}}/>
     </Box>
 
     <Box backgroundColor={neutral} p='1rem' >
 
-<InputBase placeholder="Occupation" onChange={(e)=>setUser({...user,Occupation:e.target.value})}  sx={{width:'100%'}}/>
+<TextField placeholder="Occupation"  label='Occupation' required  onChange={(e)=>setUser({...user,Occupation:e.target.value})}  sx={{width:'100%'}}/>
     </Box>
 
     <Box 
@@ -207,7 +235,7 @@ setimage(accepted[0])
             {image.path}
             </Typography>
             <EditOutlined/>
-        </FlexBetween>):<p>Add Your Profle Photo</p>
+        </FlexBetween>):<p>Add Your Profle Photo Only .jpg Allowed</p>
    }
         
             </Box>
@@ -236,7 +264,8 @@ setimage(accepted[0])
 
 <Button variant="contained" backgroundColor={palette.primary.main}
 color={palette.primary.alt}
-onClick={()=>{SignUp?Register():Login()}}
+
+onClick={()=>{isValid()}}
 
 >
     {SignUp?'SignUp':'SignIn'}
@@ -259,29 +288,11 @@ mt:'1rem'
 </Typography>
 
     </Box>
-    <Typography>
-        OR Sign In with
-    </Typography>
-
-
-<Box
-backgroundColor={neutral}
-display='flex'
-justifyContent='space-around'
-p='1.5rem'
->
     
-<IconButton >
-
-<Google/>
-</IconButton>
-
-<IconButton>
-
-<Facebook/>
-</IconButton>
-
-</Box>
+{
+    
+    
+}
 
 
 </Box>
@@ -291,9 +302,11 @@ p='1.5rem'
 
 {
     Loading&&(
-      <Box sx={{position:'fixed',backgroundColor:'rgba(0,0,0,0.5)',top:'0',bottom:0,left:0,right:0}}>
-          <img src={load} alt='noloading'/>  
-      </Box>  
+      <Box sx={{position:'fixed',backgroundColor:'rgba(0,0,0,0.5)',top:'0',bottom:'0',left:'0',right:'0'}}>
+     <Box sx={{position:'absolute',top:'50%',left:'50%',transform:'translate(-50%,-50%)'}}>
+          <CircularProgress/>
+     </Box>
+      </Box>
     )
 }
 

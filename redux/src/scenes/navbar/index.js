@@ -1,4 +1,4 @@
-import { IconButton,InputBase,Typography ,Box,useTheme,useMediaQuery, MenuItem,Divider,FormControl, Select} from "@mui/material";
+import { IconButton,InputBase,Typography ,Box,useTheme,CircularProgress,useMediaQuery, MenuItem,Divider,FormControl, Select} from "@mui/material";
 import {FlexBetween} from '../../components/FlexBetween'
 import {Close, DarkMode,Menu, Help, LightMode, Message, Notifications, Search, SentimentNeutralOutlined} from '@mui/icons-material'
 import {setMode,setdummyUser} from '../../state/index'
@@ -26,15 +26,17 @@ export default function Navbar(){
 console.log(currentUser)
 const [open, setOpen] = useState(false);
   const handleOpen = () => setOpen(true);
+  let [Loading,setLoading]=useState(0)
   const handleClose = () => setOpen(false);
   let [SuggestedUsers,setSuggestedUsers]=useState([]);
 async function LogOut(){
     try{
+        setLoading(1)
         let res=await account.get()
         console.log(res)
       await  account.deleteSession(localStorage.getItem('sessionId'))
       localStorage.removeItem('sessionId')
-    
+    // dispatch()
       navigate('/')
     }
     catch(err){console.log(err,'Error In LogOut')}
@@ -238,6 +240,15 @@ background:background
   </Box>
 )
 
+}
+ {
+    Loading?(
+      <Box sx={{position:'fixed',backgroundColor:'rgba(0,0,0,0.5)',top:'0',bottom:'0',left:'0',right:'0'}}>
+     <Box sx={{position:'absolute',top:'50%',left:'50%',transform:'translate(-50%,-50%)'}}>
+          <CircularProgress/>
+     </Box>
+      </Box>
+    ):''
 }
     </FlexBetween>
 )

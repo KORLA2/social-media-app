@@ -1,5 +1,5 @@
 import Navbar from '../navbar/index'
-import {useMediaQuery,Box,InputBase,Typography,useTheme,IconButton} from  '@mui/material'
+import {useMediaQuery,Box,InputBase,Typography,useTheme,IconButton,CircularProgress} from  '@mui/material'
 import {Widgetwrap} from '../../components/widgets'
 import {SendRounded} from '@mui/icons-material'
 import {Friendwidget} from '../widgets/Friendswidget'
@@ -14,7 +14,8 @@ export default function Message(){
     let {palette}=useTheme();
     let [message,setmessage]=useState('');
     let {userId} =useParams();
-    let [Ok,setOk]=useState(0);
+  let [Loading,setLoading]=useState(1)
+
     let [AllMessages,setAllMessages]=useState([]);
    async function SendMessage(){
         try{
@@ -26,7 +27,8 @@ export default function Message(){
         
     }
     async  function fetchAllMessages(){
-        try{
+
+try{
         
           let res=await database.listDocuments('6470905eda50ef893bdb','647ac13cd54d3e2223c1',
    [query.equal('From',[userId,localStorage.getItem('unique')]),
@@ -34,7 +36,7 @@ export default function Message(){
          ]      )
         
      setAllMessages(res.documents)
-
+setLoading(0)
           
         }
         catch(err){
@@ -115,6 +117,16 @@ padding='0.1rem 1.5rem'
     </Widgetwrap>
  
     </Box>
+    {
+    Loading&&(
+      <Box sx={{position:'fixed',backgroundColor:'rgba(0,0,0,0.5)',top:'0',bottom:'0',left:'0',right:'0'}}>
+     <Box sx={{position:'absolute',top:'50%',left:'50%',transform:'translate(-50%,-50%)'}}>
+          <CircularProgress/>
+     </Box>
+      </Box>
+    )
+}
+
     </Box>
 
   

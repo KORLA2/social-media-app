@@ -1,4 +1,4 @@
-import {account,database,Id,storage} from '../Appwrite/Appwrite'
+import {account,database,client,storage} from '../Appwrite/Appwrite'
 import {useDispatch} from 'react-redux'
 import {setcurrentUser} from '../../state/index'
 import  {v4 as uuid} from 'uuid'
@@ -23,6 +23,7 @@ let database_res= await database.createDocument(
     user
         );
      console.log(res)
+     
      return database_res;
 
     }

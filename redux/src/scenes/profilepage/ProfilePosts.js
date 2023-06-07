@@ -11,7 +11,7 @@ useEffect(()=>{
  async function fetchposts(){
      try{
          
-     let res=await database.getDocument('6470905eda50ef893bdb','64760db20226ac09a729',postID)
+     let res=await database.getDocument('6470905eda50ef893bdb','647f664f4b3d256deac1',postID)
      console.log(res)
      setpost(res)
      }
