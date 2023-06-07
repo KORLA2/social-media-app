@@ -2,7 +2,7 @@ import Navbar from '../navbar/index'
 import Widgets from '../widgets/index'
 import {useEffect,useState} from 'react'
 import {UserInterest} from '../widgets/UserInterest'
-import {Box, useMediaQuery} from '@mui/material'
+import {Box,CircularProgress, useMediaQuery} from '@mui/material'
 import {useNavigate} from 'react-router-dom'
 import {database} from '../Appwrite/Appwrite'
 import {setcurrentUser} from '../../state/index'
@@ -21,7 +21,7 @@ let [Loading,setLoading]=useState(1)
  console.log(currentUser)
 let fetch=async()=>{
 
-let pro=database.listDocuments('6470905eda50ef893bdb','64760db20226ac09a729')
+let pro=database.listDocuments('6470905eda50ef893bdb','647f664f4b3d256deac1')
 
 pro.then(
     function(res){
@@ -110,9 +110,11 @@ flexBasis={nonmobile?'26%':undefined}
 
 {
     Loading&&(
-      <Box sx={{position:'fixed',backgroundColor:'rgba(0,0,0,0.5)',top:'0',bottom:0,left:0,right:0}}>
-          <img src={load} alt='noloading'/>  
-      </Box>  
+      <Box sx={{position:'fixed',backgroundColor:'rgba(0,0,0,0.5)',top:'0',bottom:'0',left:'0',right:'0'}}>
+     <Box sx={{position:'absolute',top:'50%',left:'50%',transform:'translate(-50%,-50%)'}}>
+          <CircularProgress/>
+     </Box>
+      </Box>
     )
 }
 

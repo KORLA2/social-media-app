@@ -1,43 +1,53 @@
 import { Widgetwrap } from "../../components/widgets";
-import {Box, IconButton, Divider,Button,TextField, Typography,useTheme} from '@mui/material';
+import {Box, IconButton, CircularProgress,Divider,Button,TextField, Typography,useTheme} from '@mui/material';
 import { Friend } from "../../components/Friends";
 import { FlexBetween } from "../../components/FlexBetween";
+import {PostMedia} from './PostMedia'
 import { ChatBubbleOutline, FavoriteOutlined,FavoriteBorderIcon, ShareOutlined, FavoriteBorderOutlined } from "@mui/icons-material";
 import { useState ,useEffect} from "react";
 import { database,storage } from "../Appwrite/Appwrite";
 export let Post=({data,isProfile})=>{
     
-    let [postDetails,setpostDetails]=useState({
-        UserId:data.UserId,
+    let [postDetails,setpostDetails]=useState({});
+    let [Loading,setLoading]=useState('');
+let [isLiked,setisLiked]=useState(0);
+    useEffect(()=>{
+        
+        setpostDetails({ UserId:data.UserId,
         Description:data.Description,
         Media:data.Media,
         Likes:data.Likes,
         Comments:data.Comments,
-        
-    });
+        MediaType:data.MediaType
+        })
+        setisLiked(postDetails?.Likes?.includes(localStorage.getItem('unique')))
+    },[data])
    console.log(data,postDetails)
 let {palette}=useTheme()
 let main=palette?.neutral?.main;
+let neutral=palette?.neutral?.medium;
 let primarylight=palette?.primary.light;
-let [isLiked,setisLiked]=useState(0);
 let [IsComments,setIsComments]=useState(0)
 let [Comment,setComment]=useState('')
-let [image,setimage]=useState('')
+let [Media,setMedia]=useState('')
 useEffect(()=>{
     
     async function getuserPost(){
         try{
             console.log(data.Media)
-        let image=await storage.getFilePreview('6472167a116ba1ed2323',data.Media)
+            setLoading(1)
+        let Media=await storage.getFilePreview('6472167a116ba1ed2323',data.Media)
       
-      setimage(image.href)
-      console.log(image)
+      setMedia(Media.href)
+      
+      
+      setLoading(0)
         }
         catch(err){
             console.log(err,'Fetching Image Error in Post')
         }
     }
-    getuserPost()
+    getuserPost() 
 },[data.Media,postDetails])
 
  let PostLikes= async ()=>{
@@ -50,11 +60,13 @@ useEffect(()=>{
                
        else postDetails.Likes.push(currentUser);
        try{
-          let res= await database.updateDocument('6470905eda50ef893bdb','64760db20226ac09a729',data.$id,postDetails);
+           setLoading(1)
+          let res= await database.updateDocument('6470905eda50ef893bdb','647f664f4b3d256deac1',data.$id,postDetails);
    
        console.log('Likes Updated')
            setpostDetails(postDetails)
      setisLiked(!isLiked)
+     setLoading(0)
        }
        catch(err){console.log(err,'failed in likes')}
         
@@ -65,17 +77,22 @@ useEffect(()=>{
 
 
        try{
-          let res= await database.updateDocument('6470905eda50ef893bdb','64760db20226ac09a729',data.$id,postDetails);
+           setLoading(1)
+           
+          let res= await database.updateDocument('6470905eda50ef893bdb','647f664f4b3d256deac1',data.$id,postDetails);
        console.log('Comment Updated')
+           setpostDetails(postDetails)
+       setComment('')
+       setLoading(0)
        }
        catch(err){console.log(err,'failed in Comment')}
         
     }
 return (
 
-    <Widgetwrap mt='0.5rem'>
+    <Widgetwrap mt='1rem'>
         
-  { !isProfile&&((<Friend UserId={data?.UserId}/>))
+  { !isProfile&&((<Friend UserId={postDetails?.UserId}/>))
 }
 
         <Box
@@ -85,10 +102,13 @@ return (
            mt='1rem'
            >
 
-  {data?.Description}
+  {postDetails?.Description}
            </Typography>
 
-<img width='100%'  height='auto' src={image} alt='No Image' style={{borderRadius:'0.75rem',marginTop:'0.75rem'}}/>
+<Box sx={{borderRadius:'0.75rem',marginTop:'0.75rem',p:'0.2rem'}}>
+    <PostMedia  MediaType={postDetails?.MediaType} Media={Media}/>
+    
+</Box>
             </Box>
 
 <FlexBetween gap='0.25rem'>
@@ -109,7 +129,7 @@ return (
 
     <ChatBubbleOutline/>
     </IconButton>
-    {data?.Comments?.length}
+    {postDetails?.Comments?.length}
 </FlexBetween>
             </FlexBetween>
             <IconButton>
@@ -120,13 +140,15 @@ return (
 
 {IsComments?( <Box mt='0.5rem'>
 
-   <FlexBetween>
+   <FlexBetween sx={{mt:'0.5rem',mb:'1rem'}}>
   <TextField id="standard-basic" 
+  value={Comment}
   onChange={(e)=>setComment(e.target.value)}
    label="Add Comment" fullWidth sx={{color:main}} variant="standard" />
                      <Button sx={{backgroundColor:primarylight}}
                      onClick={()=>{
                          postDetails.Comments=[...postDetails.Comments,Comment]
+                        
                          PostComment()
                      }}
                      >
@@ -134,10 +156,14 @@ return (
                      </Button>
                    </FlexBetween>
 
+<Typography color={neutral}>
+Comments
+</Typography>
+
            {
 
-            data?.Comments?.map((e,idx)=>(
-               <Box key={idx}>
+            postDetails?.Comments?.map((e,idx)=>(
+               <Box key={idx} sx={{mt:"1rem"}}>
                 
                 <Typography color={main} m='0.5rem 0' pl='0.5rem'>
                    {e}
@@ -152,6 +178,15 @@ return (
             
             </Box>
     ):<Box mt='0.5rem'/>
+}
+{
+    Loading?(
+      <Box sx={{position:'fixed',backgroundColor:'rgba(0,0,0,0.5)',top:'0',bottom:'0',left:'0',right:'0'}}>
+     <Box sx={{position:'absolute',top:'50%',left:'50%',transform:'translate(-50%,-50%)'}}>
+          <CircularProgress/>
+     </Box>
+      </Box>
+    ):''
 }
         </Widgetwrap>
 
