@@ -3,7 +3,7 @@ import {Box, IconButton, CircularProgress,Divider,Button,TextField, Typography,u
 import { Friend } from "../../components/Friends";
 import { FlexBetween } from "../../components/FlexBetween";
 import {PostMedia} from './PostMedia'
-import { ChatBubbleOutline, FavoriteOutlined,FavoriteBorderIcon, ShareOutlined, FavoriteBorderOutlined } from "@mui/icons-material";
+import { ChatBubbleOutline, FavoriteOutlined, ShareOutlined, FavoriteBorderOutlined } from "@mui/icons-material";
 import { useState ,useEffect} from "react";
 import { database,storage } from "../Appwrite/Appwrite";
 export let Post=({data,isProfile})=>{
@@ -13,6 +13,7 @@ export let Post=({data,isProfile})=>{
 let [isLiked,setisLiked]=useState(0);
     useEffect(()=>{
         
+        setisLiked(data?.Likes?.includes(localStorage.getItem('unique')))
         setpostDetails({ UserId:data.UserId,
         Description:data.Description,
         Media:data.Media,
@@ -20,7 +21,6 @@ let [isLiked,setisLiked]=useState(0);
         Comments:data.Comments,
         MediaType:data.MediaType
         })
-        setisLiked(postDetails?.Likes?.includes(localStorage.getItem('unique')))
     },[data])
    console.log(data,postDetails)
 let {palette}=useTheme()
@@ -64,7 +64,7 @@ useEffect(()=>{
           let res= await database.updateDocument('6470905eda50ef893bdb','647f664f4b3d256deac1',data.$id,postDetails);
    
        console.log('Likes Updated')
-           setpostDetails(postDetails)
+       
      setisLiked(!isLiked)
      setLoading(0)
        }
@@ -105,10 +105,10 @@ return (
   {postDetails?.Description}
            </Typography>
 
-<Box sx={{borderRadius:'0.75rem',marginTop:'0.75rem',p:'0.2rem'}}>
-    <PostMedia  MediaType={postDetails?.MediaType} Media={Media}/>
+
+   <img width='100%' src={Media} style={{borderRadius:'0.75rem',marginTop:'0.75rem',p:'0.2rem'}} />
     
-</Box>
+
             </Box>
 
 <FlexBetween gap='0.25rem'>

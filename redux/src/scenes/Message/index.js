@@ -17,11 +17,10 @@ export default function Message(){
   let [Loading,setLoading]=useState(1)
 
     let [AllMessages,setAllMessages]=useState([]);
+    
    async function SendMessage(){
         try{
-            console.log(AllMessages)
             let res=await database.createDocument('6470905eda50ef893bdb','647ac13cd54d3e2223c1',uuid(),{From:localStorage.getItem('unique'),To:userId,Message:message})
-        
         }
         catch(err){console.log('Error in Message Page')}
         
@@ -52,16 +51,15 @@ setLoading(0)
       
     },[userId])
     useEffect(()=>{
-        
-       
-            
-             client.subscribe("databases.6470905eda50ef893bdb.collections.647ac13cd54d3e2223c1.documents",(data)=>{
+         let unsub=    client.subscribe("databases.6470905eda50ef893bdb.collections.647ac13cd54d3e2223c1.documents",(data)=>{
       if(data.payload.From===userId&&data.payload.To===localStorage.getItem('unique')||data.payload.To===userId&&data.payload.From===localStorage.getItem('unique'))
-    
-    console.log(data.payload,AllMessages)
-     setAllMessages([...AllMessages,data.payload])
+
+setAllMessages([...AllMessages,data.payload])
+      
      }) 
-         
+       return ()=>{
+            unsub()
+       }
         
     },[])
     

@@ -16,10 +16,11 @@ let [image,setimage]=useState(null);
     let {palette}=useTheme();
     let [Loading,setLoading]=useState('')
     let dispatch=useDispatch();
-    let currentUser=useSelector(state=>state.currentUser)
+    let currentUser=JSON.parse(localStorage.getItem('user'))
+
+
     let postID=  uuid().split('-').join('');
     let nonmobile=useMediaQuery('(min-width:1000px)')
-    let [Media,setMedia]=useState('Image')
 let [data,setdata]=useState({
     UserId:localStorage.getItem('unique'),
    
@@ -27,7 +28,6 @@ let [data,setdata]=useState({
     Media:'',
     Likes:[],
      Comments:[],
-    MediaType:''
 });
 let navigate=useNavigate();
 let mediumMain=palette.neutral?.mediumMain;
@@ -40,8 +40,6 @@ let neutral=palette.neutral?.light;
 useEffect(()=>{
     
      async function  updateuser(){
-         
-    if(currentUser.Mail!==''){
         
     try{
         let res=await database.updateDocument('6470905eda50ef893bdb','6470906723f0b50c18db',localStorage.getItem('unique'),currentUser)
@@ -49,7 +47,7 @@ useEffect(()=>{
     
     }
    catch(err){console.log('failed in user',err)}
-    }
+    
     }
     updateuser();
 },[currentUser.posts])
@@ -64,40 +62,19 @@ data.Media=postID;
 setLoading(1)
   let res= await storage.createFile('6472167a116ba1ed2323',postID,image)
      console.log('success in image',res)
-     try{
-         
-     let res=await database.createDocument('6470905eda50ef893bdb','647f664f4b3d256deac1',postID,data)
+     await database.createDocument('6470905eda50ef893bdb','647f664f4b3d256deac1',postID,data)
      console.log('success in post data base',res)
 
 dispatch(setPost({post:postID}))
 setLoading(0)
-     }
-     catch(err){console.log('failed in database',err)}
+     
  }
  catch(err){console.log('failed in image',err)}
 
 
 }
 
-let Formats=()=>{
-    if(Media==='Image') {
-setdata({...data,MediaType:'.jpg'})
-        return '.jpg'}
-    if(Media==='File') { 
-setdata({...data,MediaType:'.pdf'})
-        
-        return '.pdf'}
-    if(Media==='Video') 
-    {
-setdata({...data,MediaType:'.mp4'})
-        
-    return '.mp4'
-    }
-setdata({...data,MediaType:'.mp3'})
-    
-    return '.mp3'
-    
-}
+
 
     return (
         <Widgetwrap>
@@ -143,7 +120,7 @@ setimage(accepted[0])
         sx={{"&:hover":{cursor:'pointer'}}}
         border={`2px dashed ${palette.primary.main}`}
         >
-            <input {...getInputProps()} accept={Formats()} />
+            <input {...getInputProps()} accept= '.jpg' />
    {
 
     image?(<FlexBetween>
@@ -152,7 +129,7 @@ setimage(accepted[0])
             {image.path}
             </Typography>
             <EditOutlined/>
-        </FlexBetween>):<p>Add {Media}</p>
+        </FlexBetween>):<p>Add Image</p>
    }
         
             </Box>
@@ -166,7 +143,7 @@ setimage(accepted[0])
 
   <FlexBetween>
 
-<FlexBetween gap='0.25rem' onClick={()=>setMedia('Image')} >
+<FlexBetween gap='0.25rem'  >
 <ImageOutlined color={mediumMain}/>
 
 <Typography
@@ -185,7 +162,7 @@ Image
 nonmobile?(
 
 <>
-<FlexBetween gap='0.25rem' onClick={()=>setMedia('File')}>
+<FlexBetween gap='0.25rem' >
 <AttachFileOutlined  color={mediumMain}/>
 
 <Typography
@@ -200,7 +177,7 @@ Attach File
 </Typography>
 
 </FlexBetween>
-<FlexBetween gap='0.25rem' onClick={()=>setMedia('Video')} >
+<FlexBetween gap='0.25rem'  >
 <GifBoxOutlined  color={mediumMain}/>
 
 <Typography
@@ -215,7 +192,7 @@ Attach Video
 </Typography>
 
 </FlexBetween>
-<FlexBetween gap='0.25rem' onClick={()=>setMedia('Audio')}>
+<FlexBetween gap='0.25rem' >
 <MicOutlined />
 
 <Typography

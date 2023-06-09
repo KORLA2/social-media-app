@@ -21,10 +21,9 @@ export default function  ProfilePage (){
     useEffect(()=>{
           
         async function fetchposts(){
-          
-       
-                
+   
        try{
+           
            let res=await database.getDocument('6470905eda50ef893bdb','6470906723f0b50c18db',userID)
           dispatch(setnavigatedUser({user:{Mail:res.Mail,Password:res.Password,Name:res.Name,City:res.City,Occupation:res.Occupation,
           Friends:res.Friends,posts:res.posts,Media:res.Media

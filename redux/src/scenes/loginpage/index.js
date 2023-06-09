@@ -27,7 +27,6 @@ let dispatch=useDispatch()
 let navigate=useNavigate();
     let primary=palette.primary.light;
 let [Loading,setLoading]=useState(0)
-let currentUser=useSelector(state=>state.currentUser)
 let {Registerd,Logined} =useAuth()
 useEffect(()=>{
     if(localStorage.getItem('sessionId'))
@@ -48,10 +47,10 @@ await Logined(user)
 
 navigate('/home')
     }
-    catch(err){
+    catch(msg){
         setLoading(0)
         showAlert(1)
-        console.log(err)
+        console.log(msg)
     }
 }
 
@@ -67,7 +66,7 @@ setSignUp(0)
    catch(err){
        setLoading(0)
 showAlert(1)
-        console.log(err)
+        console.log(err.msg)
        
    }
 
@@ -76,8 +75,11 @@ showAlert(1)
 let isValid= ()=>{
     if(SignUp)
     {
-    if(!user.Mail|| !user.Password|| !user.Occcupation || !image || !user.City ||!user.Name)
-    showAlert(1)
+     
+    if(!user.Mail|| !user.Password|| !user.Occupation || !image || !user.City ||!user.Name)
+  {
+  showAlert(1)
+  }  
     else Register()
         return;
     }

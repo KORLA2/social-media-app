@@ -7,8 +7,8 @@ import {setFriend} from '../../state/index'
 import {useSelector,useDispatch} from 'react-redux'
 import {client,database,query} from '../Appwrite/Appwrite'
 export default function Notifications(){
-    let currentUser=useSelector(state=>state.currentUser)
-    let [Notifications,setNotifications] =useState([]);
+    let currentUser=JSON.parse(localStorage.getItem('user'))
+    let [Notifications,setNotifications] = useState([]);
     let {palette}=useTheme()
     let background=palette.background.default;
     let alt=palette?.background?.alt;
@@ -32,23 +32,30 @@ setLoading(0)
     catch(err){console.log(err,'Error in Notification Page')}
     
 }
-async function deleteNotification(e,idx){
+async function deleteNotification(e,idx,accepted){
     
     try{
+        setLoading(1)
+        await database.updateDocument('6470905eda50ef893bdb','6478e2c274ce8e6c036f',e.$id,{
+            Name:e.Name,
+            ToId:e.ToId,
+            FromId:e.FromId,
+            accepted:accepted
+        })
         
         await database.deleteDocument('6470905eda50ef893bdb','6478e2c274ce8e6c036f',e.$id)
         console.log('Notification successfully Deleted')
-      console.log((Notifications.map((e,id)=>{if(id!==idx)return e;})))
-      setNotifications(Notifications.map((e,id)=>{if(id!==idx)return e;}));
+      console.log(Notifications,idx,e)
+    //   setNotifications(Notifications?.map((e,id)=>{if(id!==idx)return e;}));
+     let Remaining_notifications=Notifications;
+      Remaining_notifications.splice(idx,1);
       
- let  {Mail,Password,Name,City,Occupation,Friends,posts}= await database.getDocument('6470905eda50ef893bdb','6470906723f0b50c18db',e.FromId)
-            Friends.push(e.ToId)
-   await  database.updateDocument('6470905eda50ef893bdb','6470906723f0b50c18db',e.FromId,
-                 {Mail:Mail,Password:Password,Name:Name,City:City,Occupation:Occupation,Friends:Friends,posts:posts})
-     
+     setNotifications(Remaining_notifications)
+setLoading(0)
 
     }catch(err){console.log(err,'Error in deleting Notification')}
 }
+
 
 
 
@@ -71,12 +78,21 @@ useEffect(()=>{
 
 useEffect(()=>{
         
-  let unsubs=client.subscribe('databases.6470905eda50ef893bdb.collections.6478e2c274ce8e6c036f.documents',(data)=>{
-if(data.payload.ToId===localStorage.getItem('unique'))
+ let unsubs=client.subscribe('databases.6470905eda50ef893bdb.collections.6478e2c274ce8e6c036f.documents',(data)=>{
+let action=data.events[0].slice(-6);
+if((data.payload.ToId===localStorage.getItem('unique'))&& action==='create')
 setNotifications([...Notifications,data.payload])
 
+if((data.payload.FromId===localStorage.getItem('unique'))&& action==='delete'&&data.payload.accepted==='yes')
+{
+    console.log('Request from other side  notifiation')
+dispatch(setFriend({friend:data.payload.ToId}))
+ }
+console.log(data.payload.FromId)
   })
       console.log(unsubs);
+    
+      
         fetchNotifications();
     },[])
     
@@ -103,7 +119,7 @@ setNotifications([...Notifications,data.payload])
                 {
                     
             dispatch(setFriend({friend:e.FromId}))
-            deleteNotification(e,idx)
+            deleteNotification(e,idx,'yes')
             
                 }
             
@@ -116,7 +132,7 @@ setNotifications([...Notifications,data.payload])
                 color:medium
             }
          }}
-         
+         onClick={()=>deleteNotification(e,idx)}
           variant='outlined'>
            Reject
             </Button>

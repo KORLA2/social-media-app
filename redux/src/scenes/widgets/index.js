@@ -19,14 +19,14 @@ let [FriendRequest,setFriendRequest]=useState(0)
 let {userID}=useParams()
 let user=useSelector((state)=>{
     if(userID)return state.navigatedUser
-    return state.currentUser
+    return JSON.parse(localStorage.getItem('user'))
 });
-let currentUser=useSelector(state=>state.currentUser)
+let currentUser=JSON.parse(localStorage.getItem('user'))
 let isFriend=currentUser.Friends?.includes(userID)
 async  function sendFollowRequest(){
     
     try{
-    let res=await  database.createDocument('6470905eda50ef893bdb','6478e2c274ce8e6c036f',uuid(),{Name:currentUser.Name,ToId:userID,FromId:localStorage.getItem('unique')})
+    let res=await  database.createDocument('6470905eda50ef893bdb','6478e2c274ce8e6c036f',uuid(),{Name:currentUser.Name,ToId:userID,FromId:localStorage.getItem('unique'),accepted:''})
       console.log(res,'FriendRequest Sent')
 
 }

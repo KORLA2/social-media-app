@@ -22,8 +22,9 @@ export default function Navbar(){
     let background=theme.palette.background.default;
     let primary=theme.palette.primary.dark;
     let neutral=theme.palette?.neutral?.light
-    let currentUser=useSelector(state=>state.currentUser)
+    let currentUser=JSON.parse(localStorage.getItem('user'))
 console.log(currentUser)
+
 const [open, setOpen] = useState(false);
   const handleOpen = () => setOpen(true);
   let [Loading,setLoading]=useState(0)

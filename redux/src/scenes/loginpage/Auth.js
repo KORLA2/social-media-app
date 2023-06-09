@@ -40,17 +40,18 @@ let Logined= async(user)=>{
  
    let Database_response= await database.getDocument('6470905eda50ef893bdb','6470906723f0b50c18db',Email_Response.userId)
      console.log(Database_response)
-     dispatch(setcurrentUser({user:{   Mail:Database_response.Mail,
+    let User={  Mail:Database_response.Mail,
     Password:Database_response.Password,
     Name:Database_response.Name,
     City:Database_response.City,
     Occupation:Database_response.Occupation,
     Friends:Database_response.Friends,
     posts:Database_response.posts,
-    Media:Database_response.Media}}))
+    Media:Database_response.Media}
+
        localStorage.setItem('sessionId',Email_Response.$id)
        localStorage.setItem('unique',Email_Response.userId)
-       
+       localStorage.setItem('user',JSON.stringify(User))
        return Database_response;
        
     }
