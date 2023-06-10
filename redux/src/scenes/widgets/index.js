@@ -1,6 +1,6 @@
 import {FlexBetween} from '../../components/FlexBetween'
 import {Widgetwrap} from '../../components/widgets'
-import { useTheme,Divider,Box,Typography,Button } from "@mui/material";
+import { useTheme,Divider,Box,Typography,Button,useMediaQuery } from "@mui/material";
 import { Image } from "../../components/image";
 import {database,query} from '../Appwrite/Appwrite'
 import {useNavigate,useParams} from 'react-router-dom'
@@ -13,20 +13,21 @@ export  default function Widgets(){
 let {palette}=useTheme()
 let dark=palette.background?.dark;    
 let primarylight=palette.primary?.light; 
+let nonmobile=useMediaQuery('(min-width:1000px)')
 let medium=palette.neutral?.medium   
 let main=palette.neutral?.main 
 let [FriendRequest,setFriendRequest]=useState(0)
 let {userID}=useParams()
 let user=useSelector((state)=>{
     if(userID)return state.navigatedUser
-    return state.currentUser
+    return JSON.parse(localStorage.getItem('user'))
 });
-let currentUser=useSelector(state=>state.currentUser)
+let currentUser=JSON.parse(localStorage.getItem('user'))
 let isFriend=currentUser.Friends?.includes(userID)
 async  function sendFollowRequest(){
     
     try{
-    let res=await  database.createDocument('6470905eda50ef893bdb','6478e2c274ce8e6c036f',uuid(),{Name:currentUser.Name,ToId:userID,FromId:localStorage.getItem('unique')})
+    let res=await  database.createDocument('6470905eda50ef893bdb','6478e2c274ce8e6c036f',uuid(),{Name:currentUser.Name,ToId:userID,FromId:localStorage.getItem('unique'),accepted:''})
       console.log(res,'FriendRequest Sent')
 
 }
@@ -41,9 +42,13 @@ useEffect(()=>{
          
       let response=await database.listDocuments('6470905eda50ef893bdb','6478e2c274ce8e6c036f')    
       
-        let res=response?.documents?.map(e=>
-        e.FromId==localStorage.getItem('unique')&&e.ToId==userID
+        let res=response?.documents?.map(e=>{
+            
+       if( e.FromId==localStorage.getItem('unique')&&e.ToId===userID)
+       return e;
+        }
         )
+        console.log(res)
         if(res[0])
         setFriendRequest(1)
      }      
@@ -58,7 +63,7 @@ let navigate=useNavigate();
 console.log(user)
 return (
 
-        <Widgetwrap>
+        <Widgetwrap >
 <FlexBetween gap='0.5rem' pb='1.1rem' onClick={()=>{navigate(`/profile/${userID?userID:localStorage.getItem('unique')}`)
 }
 }
@@ -133,17 +138,16 @@ fontWeight={500}
     Number of views
 </Typography>
 <Typography color={main} >
-2345
+{user?.Views}
 </Typography>
     </Box>
     <Box display='flex' alignItems='center' justifyContent='space-between' gap='1rem'>
     <Typography color={main}>
 
-Number of Post Impressions
+Number of Posts Uploaded 
 </Typography>
 <Typography color={main}>
-1234
-
+{user?.posts?.length}
 </Typography>
         </Box>
 

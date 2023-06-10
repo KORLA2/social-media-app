@@ -7,7 +7,8 @@ import { useSelector } from 'react-redux';
 export let Friendwidget=({isMessage})=>{
 
 let {userID}=useParams()
-let user=useSelector(state=>userID?state.navigatedUser:state.currentUser)
+let user=useSelector(state=>userID?state.navigatedUser: JSON.parse(localStorage.getItem('user'))
+)
 
 let {palette}=useTheme()
 let dark=palette.neutral?.dark

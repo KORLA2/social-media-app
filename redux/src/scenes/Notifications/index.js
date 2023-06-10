@@ -7,8 +7,9 @@ import {setFriend} from '../../state/index'
 import {useSelector,useDispatch} from 'react-redux'
 import {client,database,query} from '../Appwrite/Appwrite'
 export default function Notifications(){
-    let currentUser=useSelector(state=>state.currentUser)
-    let [Notifications,setNotifications] =useState([]);
+    let currentUser=JSON.parse(localStorage.getItem('user'))
+    let [ToNotifications,setToNotifications] = useState([]);
+    let [FromNotifications,setFromNotifications] = useState([]);
     let {palette}=useTheme()
     let background=palette.background.default;
     let alt=palette?.background?.alt;
@@ -20,64 +21,91 @@ let dispatch=useDispatch()
 async function fetchNotifications(){
     
     try{
-       let res= await database.listDocuments('6470905eda50ef893bdb','6478e2c274ce8e6c036f',[
+       let To_Response= await database.listDocuments('6470905eda50ef893bdb','6478e2c274ce8e6c036f',[
            
            query.equal('ToId',localStorage.getItem('unique'))
+           
        ])
-       console.log(res);
-setNotifications(res.documents) 
+setToNotifications(To_Response.documents) 
+
+let From_Response=await database.listDocuments('6470905eda50ef893bdb','6478e2c274ce8e6c036f',[
+    query.equal('FromId',localStorage.getItem('unique')),
+    query.notEqual('accepted','')
+])
+setFromNotifications(From_Response.documents)
+
+
 setLoading(0)       
     }
     
     catch(err){console.log(err,'Error in Notification Page')}
     
 }
-async function deleteNotification(e,idx){
+async function deleteNotification(e,idx,isRejected){
     
     try{
-        
+       
+        setLoading(1)
         await database.deleteDocument('6470905eda50ef893bdb','6478e2c274ce8e6c036f',e.$id)
         console.log('Notification successfully Deleted')
-      console.log((Notifications.map((e,id)=>{if(id!==idx)return e;})))
-      setNotifications(Notifications.map((e,id)=>{if(id!==idx)return e;}));
-      
- let  {Mail,Password,Name,City,Occupation,Friends,posts}= await database.getDocument('6470905eda50ef893bdb','6470906723f0b50c18db',e.FromId)
-            Friends.push(e.ToId)
-   await  database.updateDocument('6470905eda50ef893bdb','6470906723f0b50c18db',e.FromId,
-                 {Mail:Mail,Password:Password,Name:Name,City:City,Occupation:Occupation,Friends:Friends,posts:posts})
+    //   setNotifications(Notifications?.map((e,id)=>{if(id!==idx)return e;}));
+     let Remaining_notifications=ToNotifications;
      
+      Remaining_notifications.splice(idx,1);
+     if(isRejected) 
+     setToNotifications(Remaining_notifications)
+     else 
+     setFromNotifications(Remaining_notifications)
+setLoading(0)
 
     }catch(err){console.log(err,'Error in deleting Notification')}
 }
 
 
+let  updateNotification= async(e,idx)=>{
+    
+    try{
+        await database.updateDocument('6470905eda50ef893bdb','6478e2c274ce8e6c036f',e.$id,{
+            Name:e.Name,
+            ToId:e.ToId,
+            FromId:e.FromId,
+            accepted:'yes'
+        })
+      let modifiedNotifications=  ToNotifications;
+      modifiedNotifications[idx].accepted='yes';
+      console.log(modifiedNotifications)
+      setToNotifications(modifiedNotifications)
+    }
+    catch(err){
+        console.log('error in updating',err)
+    }
+    
+}
 
 useEffect(()=>{
     
+    
      async function  updateuser(){
-         
-    if(currentUser.Mail!==''){
-     
+       
     try{
         let res=await database.updateDocument('6470905eda50ef893bdb','6470906723f0b50c18db',localStorage.getItem('unique'),currentUser)
      console.log('success in user data base Friends',res)
     
     }
    catch(err){console.log('failed in users friends',err)}
+    
     }
-    }
-    updateuser();
+    updateuser()
+    
 },[currentUser.Friends])
+    
+    
+    
+
 
 useEffect(()=>{
-        
-  let unsubs=client.subscribe('databases.6470905eda50ef893bdb.collections.6478e2c274ce8e6c036f.documents',(data)=>{
-if(data.payload.ToId===localStorage.getItem('unique'))
-setNotifications([...Notifications,data.payload])
 
-  })
-      console.log(unsubs);
-        fetchNotifications();
+  fetchNotifications();
     },[])
     
 
@@ -87,7 +115,7 @@ setNotifications([...Notifications,data.payload])
         <Navbar/>
     <Box m='1rem' p='1rem' >
         <Widgetwrap>{
-            Notifications?.map((e,idx)=>
+            ToNotifications?.map((e,idx)=>
             <Box >
                 <FlexBetween gap='2rem'>
                         <Typography sx={{textAlign:'center'}} >
@@ -102,21 +130,21 @@ setNotifications([...Notifications,data.payload])
             onClick={()=>
                 {
                     
-            dispatch(setFriend({friend:e.FromId}))
-            deleteNotification(e,idx)
-            
+            dispatch(setFriend({friend:[e.FromId]}))
+             updateNotification(e,idx)
                 }
-            
             }
+            disabled={!e.accepted?0:1}
+            
             >
-            Accept
+           { !e.accpted?'Accept':'Accepted'}
             </Button>
          <Button sx={{backgroundColor:'red',color:alt,
           "&:hover":{
                 color:medium
             }
          }}
-         
+         onClick={()=>deleteNotification(e,idx,1)}
           variant='outlined'>
            Reject
             </Button>
@@ -127,6 +155,37 @@ setNotifications([...Notifications,data.payload])
                 </Box>
             )
     
+            }
+            {
+                FromNotifications?.map((e,idx)=>
+            <Box >
+                <FlexBetween gap='2rem'>
+                        <Typography sx={{textAlign:'center'}} >
+           {e.Name} Accepted Your Request
+            </Typography>
+          
+            <Button sx={{backgroundColor:'green' ,color:background,
+            "&:hover":{
+                color:medium
+            }
+            }} variant='outlined'
+            onClick={()=>
+                {
+                    
+            dispatch(setFriend({friend:[e.ToId]}))
+            deleteNotification(e,idx,0)
+                }
+            
+            }
+            >
+            Done
+            </Button>
+         
+              </FlexBetween>
+                
+            <Divider sx={{m:'1rem'}}/>
+                </Box>
+            )
             }
         </Widgetwrap>
     </Box>

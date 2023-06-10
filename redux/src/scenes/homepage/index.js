@@ -15,57 +15,44 @@ export default function  HomePage (){
 let nonmobile=useMediaQuery('(min-width:1000px)')
 let [posts,setposts]=useState([]);
 let dispatch=useDispatch();
+let [Display,setDisplay]=useState(0)
 let navigate=useNavigate()
 let [Loading,setLoading]=useState(1)
- let currentUser=useSelector(state=>state.currentUser)
+ let currentUser=JSON.parse(localStorage.getItem('user'))
  console.log(currentUser)
 let fetch=async()=>{
+try{
+let Allposts=await database.listDocuments('6470905eda50ef893bdb','647f664f4b3d256deac1')
+ setLoading(0)
+ setposts(Allposts.documents)
+}
 
-let pro=database.listDocuments('6470905eda50ef893bdb','647f664f4b3d256deac1')
 
-pro.then(
-    function(res){
-        
-        setposts(res.documents)
-    
-    },
-    
-    function(err){
+ catch(err){
+     setLoading(0)
         console.log(err)
-    }
-)
+  
+ } 
+   
+
 
 }
-useEffect(()=>{
-  
- 
-fetch()
-  
-},[currentUser.posts])
 
 useEffect(()=>{
-    
-    async function fetchcurrentUser(){
-        try{
-         let Database_response= await database.getDocument('6470905eda50ef893bdb','6470906723f0b50c18db',localStorage.getItem('unique'))
-     console.log(Database_response)
-     dispatch(setcurrentUser({user:{   Mail:Database_response.Mail,
-    Password:Database_response.Password,
-    Name:Database_response.Name,
-    City:Database_response.City,
-    Occupation:Database_response.Occupation,
-    Friends:Database_response.Friends,
-    posts:Database_response.posts,
-    Media:Database_response.Media}}))
-    setLoading(0)
-        }
-        catch(err){console.log(err,'Error in fetching current User')}
-        
-    }
-    fetchcurrentUser()
+  
+  if(localStorage.getItem('sessionId')===null)
+  navigate('/')
+ else if(currentUser.posts)
+
+setDisplay(1)
+  fetch()
 },[])
 
+
+
 return (
+
+    Display&&(    
 <Box>
 <Navbar/>
 
@@ -81,7 +68,7 @@ justifyContent='space-between'
 <Box 
 flexBasis={nonmobile?'26%':undefined}
 >
-<Widgets  />
+<Widgets />
     
     </Box>
 
@@ -100,7 +87,7 @@ mt={nonmobile?undefined:'2rem'}
     <Box 
 flexBasis={nonmobile?'26%':undefined}
 >
-<Advert/>
+<Advert />
 <Box mt='2rem'/>
     <Friendwidget />
     </Box>)
@@ -118,7 +105,8 @@ flexBasis={nonmobile?'26%':undefined}
     )
 }
 
-</Box>
+</Box>)
+    
 
     )
 }
