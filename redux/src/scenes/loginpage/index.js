@@ -5,7 +5,7 @@ import {setMode,setcurrentUser} from '../../state/index'
 import { useState } from "react";
 import {Image} from '../../components/image'
 import load from './social-networking.jpg'
-
+import {account} from '../Appwrite/Appwrite'
 import Social from './social-networking.jpg'
 import Dropzone from "react-dropzone";
 import {useAuth} from './Auth'
@@ -22,9 +22,11 @@ export default function  LoginPage (){
     let neutral=palette?.neutral?.light
 let [image,setimage]=useState(0)
 let [SignUp,setSignUp]=useState(0)
+let [successfulMessage,setsuccesfulMessage]=useState('')
 let [user,setUser]=useState({});
 let dispatch=useDispatch()
 let navigate=useNavigate();
+let [ErrorMessage,setErrorMessage]=useState('')
     let primary=palette.primary.light;
 let [Loading,setLoading]=useState(0)
 let {Registerd,Logined} =useAuth()
@@ -44,12 +46,23 @@ let Login=async (e)=>{
        setLoading(1)
         
 await Logined(user)
-
+let Response=await account.get()
+setLoading(0)
+console.log(Response)
+if(Response.emailVerification)
 navigate('/home')
+else 
+{
+  setsuccesfulMessage('Check your Mail and Verify your account');
+ await account.createVerification('https://lf9b0l-3000.csb.app/verifyaccount')
+    
+}
+
     }
     catch(msg){
         setLoading(0)
         showAlert(1)
+        setErrorMessage('Login Error')
         console.log(msg)
     }
 }
@@ -60,13 +73,15 @@ let Register=async (e)=>{
        setLoading(1)
 await Registerd(user,image);
 setLoading(0)
-setSignUp(0)
+setsuccesfulMessage('Registration Succesful Now LogIn to Continue')
 
    }
    catch(err){
        setLoading(0)
 showAlert(1)
-        console.log(err.msg)
+        setErrorMessage('Registration Error')
+
+        console.log(err)
        
    }
 
@@ -79,6 +94,8 @@ let isValid= ()=>{
     if(!user.Mail|| !user.Password|| !user.Occupation || !image || !user.City ||!user.Name)
   {
   showAlert(1)
+        setErrorMessage('Fill All details')
+  
   }  
     else Register()
         return;
@@ -168,7 +185,7 @@ flexDirection='column'
 gap='1.5rem'
 >
     {
-alert&&(<Alert sx={{mb:'1rem'}} severity="error">Check your details try again</Alert>
+alert&&(<Alert sx={{mb:'1rem'}} severity="error">{ErrorMessage}</Alert>
 )
 }
     {
@@ -228,7 +245,7 @@ setimage(accepted[0])
         sx={{"&:hover":{cursor:'pointer'}}}
         border={`2px dashed ${palette.primary.main}`}
         >
-            <input {...getInputProps()} />
+            <input {...getInputProps()}  accepted='.jpg'/>
    {
 
     image?(<FlexBetween>
@@ -292,7 +309,10 @@ mt:'1rem'
     </Box>
     
 {
-    
+  successfulMessage? <Alert severity="success">
+      
+{successfulMessage}   
+  </Alert>:''
     
 }
 

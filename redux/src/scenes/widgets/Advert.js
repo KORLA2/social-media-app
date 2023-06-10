@@ -8,7 +8,8 @@ let dark=palette.neutral?.dark,
 main= palette.neutral?.main,
 medium=palette.neutral?.medium;
     return (
-<Widgetwrap>
+        
+<Widgetwrap >
 <FlexBetween>
 
 <Typography color={dark} variant='h5' fontWeight={500}>

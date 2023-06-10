@@ -2,14 +2,17 @@ import { Widgetwrap } from "../../components/widgets";
 import {Box, IconButton, CircularProgress,Divider,Button,TextField, Typography,useTheme} from '@mui/material';
 import { Friend } from "../../components/Friends";
 import { FlexBetween } from "../../components/FlexBetween";
-import {PostMedia} from './PostMedia'
+import {WhatsappShareButton,WhatsappIcon} from 'react-share'
 import { ChatBubbleOutline, FavoriteOutlined, ShareOutlined, FavoriteBorderOutlined } from "@mui/icons-material";
 import { useState ,useEffect} from "react";
 import { database,storage } from "../Appwrite/Appwrite";
 export let Post=({data,isProfile})=>{
     
+    let host=window.location.hostname
+    console.log(host)
     let [postDetails,setpostDetails]=useState({});
     let [Loading,setLoading]=useState('');
+    let [Share,setShare]=useState('');
 let [isLiked,setisLiked]=useState(0);
     useEffect(()=>{
         
@@ -49,7 +52,7 @@ useEffect(()=>{
     }
     getuserPost() 
 },[data.Media,postDetails])
-
+// console.log()
  let PostLikes= async ()=>{
    console.log(postDetails)
     
@@ -132,10 +135,21 @@ return (
     {postDetails?.Comments?.length}
 </FlexBetween>
             </FlexBetween>
-            <IconButton>
+            <IconButton
+            
+            >
+<WhatsappShareButton
+title='Check this Post In  SocialNetwork'
+url={`${host}/posts/${data.$id}`}
+>
+<WhatsappIcon
 
-            <ShareOutlined/>
-            </IconButton>
+>
+
+</WhatsappIcon>
+</WhatsappShareButton>
+  
+          </IconButton>
 </FlexBetween>
 
 {IsComments?( <Box mt='0.5rem'>

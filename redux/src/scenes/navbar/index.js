@@ -1,17 +1,16 @@
-import { IconButton,InputBase,Typography ,Box,useTheme,CircularProgress,useMediaQuery, MenuItem,Divider,FormControl, Select} from "@mui/material";
+import { IconButton,InputBase,Typography ,Box,useTheme,CircularProgress,useMediaQuery,Badge,MenuItem,Divider,FormControl, Select} from "@mui/material";
 import {FlexBetween} from '../../components/FlexBetween'
-import {Close, DarkMode,Menu, Help, LightMode, Message, Notifications, Search, SentimentNeutralOutlined} from '@mui/icons-material'
+import {Close, DarkMode,Menu, Help, LightMode, Message, Notifications, Search} from '@mui/icons-material'
 import {setMode,setdummyUser} from '../../state/index'
 import {useSelector,useDispatch} from 'react-redux'
-import { useState } from "react";
+import { useState ,useEffect} from "react";
 import {Friend} from '../../components/Friends'
 
 import {account, database,query} from '../Appwrite/Appwrite';
 import { useNavigate } from "react-router-dom";
 import { Widgetwrap } from "../../components/widgets";
 export default function Navbar(){
-
-    let theme=useTheme();
+ let theme=useTheme();
     let dispatch=useDispatch()
     let [toggle,setToggle] =useState(false)
     let color=useSelector(state=>state.mode)
@@ -19,11 +18,31 @@ export default function Navbar(){
     let alt=theme.palette.background?.alt;
     let  dark=theme.palette.neutral?.dark;
     let navigate=useNavigate()
+let main=theme?.palette.neutral?.main 
+
     let background=theme.palette.background.default;
     let primary=theme.palette.primary.dark;
     let neutral=theme.palette?.neutral?.light
     let currentUser=JSON.parse(localStorage.getItem('user'))
 console.log(currentUser)
+let [AllNotifications,setAllNotifications]=useState([])
+async function fetchNotifications(){
+    try{
+        
+  let notifications= await database.listDocuments('6470905eda50ef893bdb','6478e2c274ce8e6c036f');
+setAllNotifications(notifications.documents)
+
+    }
+    catch(err)
+{
+    console.log(err,'navbar notifications')
+}    
+}
+
+useEffect(()=>{
+    
+    fetchNotifications()
+},[])
 
 const [open, setOpen] = useState(false);
   const handleOpen = () => setOpen(true);
@@ -58,7 +77,7 @@ async function Suggested(e){
 
 return (
 
-    <FlexBetween pading='2rem 6%' backgroundColor={alt} >
+    <FlexBetween  pading='2rem 6%' backgroundColor={alt} >
         <FlexBetween  gap='1.75rem'>
 <Typography fontWeight='bold'
 fontSize='clamp(1rem,2rem,2.25rem)'
@@ -71,9 +90,13 @@ sx={{
 
     }
 }}
+onClick={()=>navigate('/home')}
 >
     SocialNetwork
 </Typography>
+
+
+
 {
     nonmobile&&(
 <Box>
@@ -84,6 +107,9 @@ padding='0.1rem 1.5rem'
 onClick={handleOpen}
    >
     <InputBase placeholder='Search...' onChange={Suggested}/>
+    
+
+    
     <IconButton>
         <Search/>
         </IconButton>
@@ -97,16 +123,18 @@ onClick={handleClose}
         open={open}
         aria-labelledby="modal-modal-title"
         aria-describedby="modal-modal-description"
-        sx={{position:'fixed' ,top:'10%',left:0,right:0,bottom:0,backgroundColor:'rgba(0,0,0,0.5)',zIndex:3}}
+        sx={{position:'fixed' ,top:'8%',left:0,right:0,bottom:0,backgroundColor:'rgba(0,0,0,0.5)',zIndex:3}}
       >
         <Widgetwrap sx={{width:400,position:'absolute',left:'15%',top:'0%'}} >
           {
-              SuggestedUsers?.map(e=>
+              SuggestedUsers.length?SuggestedUsers.map(e=>
                   <Box display='flex' flexDirection='column' gap='0.5rem'>
                   <Friend UserId={e.$id} isMessage={0}/>
                   <Divider sx={{m:'0.3rem'}}/>
               </Box>
-              )
+              ):<Typography color={main}>
+                 Search Users in SocialNetwork
+                  </Typography>
               
           }
           
@@ -141,8 +169,9 @@ onClick={handleClose}
 <Message   sx={{fontSize:'25px'}} />
 </IconButton>
 <IconButton onClick={()=>navigate('/Notifications')}>
-
+<Badge badgeContent={AllNotifications.length}  color="success">
 <Notifications   sx={{fontSize:'25px'}} />
+</Badge>
 </IconButton>
 
 <Help   sx={{fontSize:'25px'}} />
@@ -184,6 +213,7 @@ onClick={handleClose}
 position:'fixed',
 right:0,
 bottom:0,
+zIndex:2,
 height:'100%',
 maxWidth:'500px',
 minWidth:'300px',
@@ -200,7 +230,7 @@ background:background
 
 
     <FlexBetween flexDirection='column' justifyContent='center' gap='3rem'>
-<IconButton onClick={()=>{dispatch(setMode())}}>
+<IconButton onClick={()=>{ setToggle(0);dispatch(setMode())}}>
 
 {
    color==='dark'?
@@ -212,10 +242,19 @@ background:background
     />
 }
     </IconButton>
-
+<IconButton onClick={()=>{setToggle(0);navigate('/Message')}}>
 <Message   sx={{fontSize:'25px'}} />
+</IconButton>
+
+
+<IconButton onClick={()=>{navigate('/Notifications');setToggle(0) }}  sx={{fontSize:'25px'}}>
+<Badge badgeContent={AllNotifications.length} color="success">
 <Notifications   sx={{fontSize:'25px'}} />
+</Badge>
+</IconButton>
+
 <Help   sx={{fontSize:'25px'}} />
+
 <FormControl value={currentUser?.Name}>
     <Select
     sx={{
@@ -231,7 +270,7 @@ background:background
         <MenuItem value={currentUser?.Name} >
         <Typography>{currentUser?.Name}</Typography>
         </MenuItem>
-        <MenuItem onClick={LogOut}> 
+        <MenuItem onClick={()=>{LogOut();setToggle(0)}}> 
         Log Out
         </MenuItem>
     </Select>
@@ -244,7 +283,7 @@ background:background
 }
  {
     Loading?(
-      <Box sx={{position:'fixed',backgroundColor:'rgba(0,0,0,0.5)',top:'0',bottom:'0',left:'0',right:'0'}}>
+      <Box sx={{position:'fixed',backgroundColor:'rgba(0,0,0,0.5)',top:'0',bottom:'0',left:'0',right:'0',zIndex:1}}>
      <Box sx={{position:'absolute',top:'50%',left:'50%',transform:'translate(-50%,-50%)'}}>
           <CircularProgress/>
      </Box>

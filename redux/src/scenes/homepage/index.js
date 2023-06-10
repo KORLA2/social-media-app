@@ -37,14 +37,15 @@ let Allposts=await database.listDocuments('6470905eda50ef893bdb','647f664f4b3d25
 
 
 }
+
 useEffect(()=>{
   
   if(localStorage.getItem('sessionId')===null)
   navigate('/')
  else if(currentUser.posts)
-fetch()
+
 setDisplay(1)
-  
+  fetch()
 },[])
 
 
@@ -67,7 +68,7 @@ justifyContent='space-between'
 <Box 
 flexBasis={nonmobile?'26%':undefined}
 >
-<Widgets  />
+<Widgets />
     
     </Box>
 
@@ -86,7 +87,7 @@ mt={nonmobile?undefined:'2rem'}
     <Box 
 flexBasis={nonmobile?'26%':undefined}
 >
-<Advert/>
+<Advert />
 <Box mt='2rem'/>
     <Friendwidget />
     </Box>)

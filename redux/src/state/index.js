@@ -26,7 +26,7 @@ export let mySlice=createSlice({
         setFriend:(state,action)=>{
   
 let user=  JSON.parse(localStorage.getItem('user'));
-    user.Friends.push(action.payload.friend)
+    user.Friends=[...user.Friends,...action.payload.friend];
     localStorage.setItem('user',JSON.stringify(user))
        
         }
@@ -42,6 +42,7 @@ let user=  JSON.parse(localStorage.getItem('user'));
      localStorage.setItem('user',JSON.stringify(user))
 
     },
+    
   
     } ,
 })

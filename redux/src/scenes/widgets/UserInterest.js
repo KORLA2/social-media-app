@@ -45,6 +45,7 @@ useEffect(()=>{
         let res=await database.updateDocument('6470905eda50ef893bdb','6470906723f0b50c18db',localStorage.getItem('unique'),currentUser)
      console.log('success in user data base',res)
     
+    // navigate(0)
     }
    catch(err){console.log('failed in user',err)}
     

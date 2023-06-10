@@ -7,10 +7,12 @@ export let useAuth = ()=>{
     let Registerd= async(user,image)=>{
         
     try{
+        
         let unique=uuid().split('-').join('')
        let res= await account.create(unique,user?.Mail,user?.Password,user?.Name);
            console.log(unique)
-       
+
+      
         await storage.createFile('647dc0ede1a1dad59818',unique,image)
         let user_photo=await storage.getFilePreview('647dc0ede1a1dad59818',unique);
       user.Media=user_photo.href;
@@ -24,8 +26,7 @@ let database_res= await database.createDocument(
         );
      console.log(res)
      
-     return database_res;
-
+     return database_res
     }
     catch(err){
         
@@ -35,9 +36,9 @@ let database_res= await database.createDocument(
 
 let Logined= async(user)=>{
     try{
-        
+
   let Email_Response=await account.createEmailSession(user?.Mail,user?.Password)
- 
+  
    let Database_response= await database.getDocument('6470905eda50ef893bdb','6470906723f0b50c18db',Email_Response.userId)
      console.log(Database_response)
     let User={  Mail:Database_response.Mail,
@@ -47,7 +48,10 @@ let Logined= async(user)=>{
     Occupation:Database_response.Occupation,
     Friends:Database_response.Friends,
     posts:Database_response.posts,
-    Media:Database_response.Media}
+    Media:Database_response.Media,
+    Views:Database_response.Views,
+    
+    }
 
        localStorage.setItem('sessionId',Email_Response.$id)
        localStorage.setItem('unique',Email_Response.userId)
