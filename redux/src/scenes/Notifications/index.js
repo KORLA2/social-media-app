@@ -15,20 +15,23 @@ export default function Notifications(){
     let alt=palette?.background?.alt;
     let medium=palette?.neutral?.medium;
 let [Loading,setLoading]=useState(1)
+
     console.log(currentUser)
 let dispatch=useDispatch()
 
 async function fetchNotifications(){
     
     try{
-       let To_Response= await database.listDocuments('6470905eda50ef893bdb','6478e2c274ce8e6c036f',[
+       let To_Response= await database.listDocuments(process.env.REACT_APP_Database_Id,process.env.REACT_APP_Notification_Collection_Id,[
            
            query.equal('ToId',localStorage.getItem('unique'))
            
        ])
+       
+       
 setToNotifications(To_Response.documents) 
 
-let From_Response=await database.listDocuments('6470905eda50ef893bdb','6478e2c274ce8e6c036f',[
+let From_Response=await database.listDocuments(process.env.REACT_APP_Database_Id,process.env.REACT_APP_Notification_Collection_Id,[
     query.equal('FromId',localStorage.getItem('unique')),
     query.notEqual('accepted','')
 ])
@@ -46,7 +49,7 @@ async function deleteNotification(e,idx,isRejected){
     try{
        
         setLoading(1)
-        await database.deleteDocument('6470905eda50ef893bdb','6478e2c274ce8e6c036f',e.$id)
+        await database.deleteDocument(process.env.REACT_APP_Database_Id,process.env.REACT_APP_Notification_Collection_Id,e.$id)
         console.log('Notification successfully Deleted')
     //   setNotifications(Notifications?.map((e,id)=>{if(id!==idx)return e;}));
      let Remaining_notifications=ToNotifications;
@@ -65,7 +68,8 @@ setLoading(0)
 let  updateNotification= async(e,idx)=>{
     
     try{
-        await database.updateDocument('6470905eda50ef893bdb','6478e2c274ce8e6c036f',e.$id,{
+        setLoading(1)
+        await database.updateDocument(process.env.REACT_APP_Database_Id,process.env.REACT_APP_Notification_Collection_Id,e.$id,{
             Name:e.Name,
             ToId:e.ToId,
             FromId:e.FromId,
@@ -75,12 +79,14 @@ let  updateNotification= async(e,idx)=>{
       modifiedNotifications[idx].accepted='yes';
       console.log(modifiedNotifications)
       setToNotifications(modifiedNotifications)
+      setLoading(0)
     }
     catch(err){
         console.log('error in updating',err)
     }
     
 }
+console.log(ToNotifications)
 
 useEffect(()=>{
     
@@ -88,7 +94,7 @@ useEffect(()=>{
      async function  updateuser(){
        
     try{
-        let res=await database.updateDocument('6470905eda50ef893bdb','6470906723f0b50c18db',localStorage.getItem('unique'),currentUser)
+        let res=await database.updateDocument(process.env.REACT_APP_Database_Id,process.env.REACT_APP_User_Collection_Id,localStorage.getItem('unique'),currentUser)
      console.log('success in user data base Friends',res)
     
     }
@@ -114,7 +120,8 @@ useEffect(()=>{
         <Box>
         <Navbar/>
     <Box m='1rem' p='1rem' >
-        <Widgetwrap>{
+        <Widgetwrap>
+            {
             ToNotifications?.map((e,idx)=>
             <Box >
                 <FlexBetween gap='2rem'>
@@ -134,19 +141,20 @@ useEffect(()=>{
              updateNotification(e,idx)
                 }
             }
-            disabled={!e.accepted?0:1}
+            disabled={e.accepted==="yes"?1:0}
             
             >
-           { !e.accpted?'Accept':'Accepted'}
+           { e.accepted!=="yes"?'Accept':'Accepted'}
             </Button>
          <Button sx={{backgroundColor:'red',color:alt,
           "&:hover":{
                 color:medium
             }
          }}
+         disabled={!e.accepted?0:1}
          onClick={()=>deleteNotification(e,idx,1)}
           variant='outlined'>
-           Reject
+          Reject
             </Button>
             </FlexBetween>
               </FlexBetween>
@@ -161,7 +169,7 @@ useEffect(()=>{
             <Box >
                 <FlexBetween gap='2rem'>
                         <Typography sx={{textAlign:'center'}} >
-           {e.Name} Accepted Your Request
+           {e.To_Name} Accepted Your Request
             </Typography>
           
             <Button sx={{backgroundColor:'green' ,color:background,
@@ -186,7 +194,11 @@ useEffect(()=>{
             <Divider sx={{m:'1rem'}}/>
                 </Box>
             )
-            }
+
+}
+{
+    !ToNotifications.length && !FromNotifications.length?<Typography textAlign='center' color={medium} >No New Notifications</Typography>:''
+}
         </Widgetwrap>
     </Box>
     

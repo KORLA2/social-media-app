@@ -42,7 +42,7 @@ useEffect(()=>{
      async function  updateuser(){
         
     try{
-        let res=await database.updateDocument('6470905eda50ef893bdb','6470906723f0b50c18db',localStorage.getItem('unique'),currentUser)
+        let res=await database.updateDocument(process.env.REACT_APP_Database_Id,process.env.REACT_APP_User_Collection_Id,localStorage.getItem('unique'),currentUser)
      console.log('success in user data base',res)
     
     // navigate(0)
@@ -61,9 +61,9 @@ let Post=async()=>{
      
 data.Media=postID;
 setLoading(1)
-  let res= await storage.createFile('6472167a116ba1ed2323',postID,image)
+  let res= await storage.createFile(process.env.REACT_APP_Post_Bucket_Id,postID,image)
      console.log('success in image',res)
-     await database.createDocument('6470905eda50ef893bdb','647f664f4b3d256deac1',postID,data)
+     await database.createDocument(process.env.REACT_APP_Database_Id,process.env.REACT_APP_Posts_Collection_Id,postID,data)
      console.log('success in post data base',res)
 
 dispatch(setPost({post:postID}))

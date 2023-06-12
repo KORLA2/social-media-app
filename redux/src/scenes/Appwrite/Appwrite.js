@@ -1,9 +1,7 @@
 import {Client,Account,Databases,Graphql,Storage,Query,ID} from 'appwrite'
 export let client=new Client();
-client.setEndpoint('https://cloud.appwrite.io/v1').setProject('647085210f385efc1628');
+client.setEndpoint(process.env.REACT_APP_End_Point).setProject(process.env.REACT_APP_PROJECT_ID);
 export let account= new Account(client);
 export let storage=new Storage(client)
 export let database=new Databases(client)
-export let graphql=new Graphql(client)
-export let Id=ID;
 export let query=Query;

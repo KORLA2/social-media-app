@@ -20,7 +20,7 @@ let {palette}=useTheme()
      <Typography color={palette?.neutral?.medium}>
      Your Account Has been succesfully verified
      </Typography>
-<Button onClick={()=>navigate('/home')}>
+<Button variant='contained' onClick={()=>navigate('/home')}>
 GO Back
 </Button>
 </Box>
@@ -28,3 +28,8 @@ GO Back
      
     )
 }
+
+
+
+
+

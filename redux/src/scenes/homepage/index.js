@@ -22,7 +22,7 @@ let [Loading,setLoading]=useState(1)
  console.log(currentUser)
 let fetch=async()=>{
 try{
-let Allposts=await database.listDocuments('6470905eda50ef893bdb','647f664f4b3d256deac1')
+let Allposts=await database.listDocuments(process.env.REACT_APP_Database_Id,process.env.REACT_APP_Posts_Collection_Id)
  setLoading(0)
  setposts(Allposts.documents)
 }
@@ -35,24 +35,32 @@ let Allposts=await database.listDocuments('6470905eda50ef893bdb','647f664f4b3d25
  } 
    
 
+}
 
+let fetchcurrentuser= async()=>{
+  try{
+      let User_response= await database.getDocument(process.env.REACT_APP_Database_Id,
+    process.env.REACT_APP_User_Collection_Id,localStorage.getItem('unique'))
+   
+       localStorage.setItem('user',JSON.stringify(User_response))
+  }catch(err){console.log(err,'Error in home page')}
+  
 }
 
 useEffect(()=>{
   
-  if(localStorage.getItem('sessionId')===null)
-  navigate('/')
- else if(currentUser.posts)
+ if(currentUser.posts)
 
 setDisplay(1)
   fetch()
+fetchcurrentuser();
 },[])
 
 
 
 return (
 
-    Display&&(    
+    Display?(    
 <Box>
 <Navbar/>
 
@@ -105,7 +113,7 @@ flexBasis={nonmobile?'26%':undefined}
     )
 }
 
-</Box>)
+</Box>):''
     
 
     )

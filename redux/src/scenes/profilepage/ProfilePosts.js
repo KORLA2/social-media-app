@@ -11,7 +11,7 @@ useEffect(()=>{
  async function fetchposts(){
      try{
          
-     let res=await database.getDocument('6470905eda50ef893bdb','647f664f4b3d256deac1',postID)
+     let res=await database.getDocument(process.env.REACT_APP_Database_Id,process.env.REACT_APP_Posts_Collection_Id,postID)
      console.log(res)
      setpost(res)
      }
