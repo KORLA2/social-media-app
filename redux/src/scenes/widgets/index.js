@@ -3,12 +3,13 @@ import {Widgetwrap} from '../../components/widgets'
 import { useTheme,Divider,Box,Typography,Button,useMediaQuery } from "@mui/material";
 import { Image } from "../../components/image";
 import {database,query} from '../Appwrite/Appwrite'
-import {useNavigate,useParams} from 'react-router-dom'
+import {useNavigate,useParams,Link} from 'react-router-dom'
 import { useEffect,useState } from 'react';
 import {setUser} from '../../state/index'
 import {v4 as uuid} from 'uuid'
 import { ManageAccounts ,LocationOnOutlined,LinkedIn,EditOutlined,Twitter,WorkOutlineOutlined} from "@mui/icons-material";
 import { useSelector,useDispatch } from 'react-redux';
+import emailjs from '@emailjs/browser';
 export  default function Widgets(){
 let {palette}=useTheme()
 let dark=palette.background?.dark;    
@@ -27,8 +28,11 @@ let isFriend=currentUser.Friends?.includes(userID)
 async  function sendFollowRequest(){
     
     try{
-    let res=await  database.createDocument('6470905eda50ef893bdb','6478e2c274ce8e6c036f',uuid(),{Name:currentUser.Name,ToId:userID,FromId:localStorage.getItem('unique'),accepted:''})
+    let res=await  database.createDocument(process.env.REACT_APP_Database_Id,process.env.REACT_APP_Notification_Collection_Id,uuid(),{Name:currentUser.Name,ToId:userID,FromId:localStorage.getItem('unique'),accepted:'',
+    To_Name:user.Name
+    })
       console.log(res,'FriendRequest Sent')
+emailjs.send('service_xiin6bv','template_gf0vpks',{Mail:user.Mail,To_Name:user.Name,From_Name:currentUser.Name},'jZhaG7It_IP0ii8YF')
 
 }
 catch(err){
@@ -40,16 +44,14 @@ useEffect(()=>{
      try{
          
          
-      let response=await database.listDocuments('6470905eda50ef893bdb','6478e2c274ce8e6c036f')    
-      
-        let res=response?.documents?.map(e=>{
-            
-       if( e.FromId==localStorage.getItem('unique')&&e.ToId===userID)
-       return e;
-        }
-        )
-        console.log(res)
-        if(res[0])
+      let response=await database.listDocuments(process.env.REACT_APP_Database_Id,process.env.REACT_APP_Notification_Collection_Id,[
+          query.equal('FromId',localStorage.getItem('unique')),
+          query.equal('ToId',userID),
+          
+          
+      ])       
+        console.log(response)
+        if(response)
         setFriendRequest(1)
      }      
      catch(err){console.log(err,"error while fetching Friend Request Sent or not")}
@@ -169,13 +171,20 @@ Number of Posts Uploaded
 
 <FlexBetween gap='1rem'>
 <Twitter/>
-<Box>
-<Typography color={main}>
+<Box >
+    <Link 
+   style={{
+       textDecoration:'none'
+    }}
+    
+    to={user.Twitter}target='_blank'> 
+<Typography color={main}  >
         Twitter
         </Typography><Typography color={main}>
 
      Social Network
         </Typography>
+   </Link>
     </Box>
  </FlexBetween>
 
@@ -188,7 +197,15 @@ Number of Posts Uploaded
 
 <FlexBetween gap='1rem'>
 <LinkedIn/>
-<Box>
+
+ <Link 
+   style={{
+       textDecoration:'none'
+    }}
+    
+    to={user.LinkedIn}target='_blank'> 
+<Box >
+    
 <Typography color={main}>
 
         LinkedIN
@@ -197,9 +214,12 @@ Number of Posts Uploaded
       Networking Platform
         </Typography>
     </Box>
+</Link>
+    
  </FlexBetween>
 
 <EditOutlined/>
+
 </FlexBetween>
  </Box>
 

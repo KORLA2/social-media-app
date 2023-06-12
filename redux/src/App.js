@@ -10,6 +10,8 @@ import {useSelector} from 'react-redux'
 import {ThemeProvider,CssBaseline} from '@mui/material'
 import {createTheme} from '@mui/material/styles'
 import themeSettings  from './themes'
+import {ProtectedRoutes} from './Protected'
+import { ViewSharedPost } from './scenes/widgets/ViewSharedPost'
 export default function App(){
 let mode=useSelector(state=>state.mode)
 let [Theme,setTheme]=useState('');
@@ -26,12 +28,16 @@ return (
 <CssBaseline/>
     <Routes>
         <Route path='/' element={ <LoginPage/>}/>
+        
+        <Route element={<ProtectedRoutes/>}>
         <Route path='/home' element={<HomePage/>}/>
-        <Route path='/Posts/:PostID' element={<HomePage/>}/>
+        <Route path='/Posts/:PostID' element={<ViewSharedPost/>}/>
         <Route path='/profile/:userID' element={<ProfilePage/>}/>
         <Route path='/Message/:userId?' element={<Message/>}/>
         <Route path='/verifyaccount' element={<Verify/>}/>
         <Route path='/Notifications' element={<Notifications/>}/>
+        </Route>
+        
     </Routes>
     </ThemeProvider>
     </Router>

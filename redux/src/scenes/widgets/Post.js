@@ -3,8 +3,10 @@ import {Box, IconButton, CircularProgress,Divider,Button,TextField, Typography,u
 import { Friend } from "../../components/Friends";
 import { FlexBetween } from "../../components/FlexBetween";
 import {WhatsappShareButton,WhatsappIcon} from 'react-share'
+import {useParams} from 'react-router-dom'
+
 import { ChatBubbleOutline, FavoriteOutlined, ShareOutlined, FavoriteBorderOutlined } from "@mui/icons-material";
-import { useState ,useEffect} from "react";
+import { useState ,useEffect,useRef} from "react";
 import { database,storage } from "../Appwrite/Appwrite";
 export let Post=({data,isProfile})=>{
     
@@ -39,7 +41,7 @@ useEffect(()=>{
         try{
             console.log(data.Media)
             setLoading(1)
-        let Media=await storage.getFilePreview('6472167a116ba1ed2323',data.Media)
+        let Media=await storage.getFilePreview(process.env.REACT_APP_Post_Bucket_Id,data.Media)
       
       setMedia(Media.href)
       
@@ -64,7 +66,7 @@ useEffect(()=>{
        else postDetails.Likes.push(currentUser);
        try{
            setLoading(1)
-          let res= await database.updateDocument('6470905eda50ef893bdb','647f664f4b3d256deac1',data.$id,postDetails);
+          let res= await database.updateDocument(process.env.REACT_APP_Database_Id,process.env.REACT_APP_Posts_Collection_Id,data.$id,postDetails);
    
        console.log('Likes Updated')
        
@@ -82,7 +84,7 @@ useEffect(()=>{
        try{
            setLoading(1)
            
-          let res= await database.updateDocument('6470905eda50ef893bdb','647f664f4b3d256deac1',data.$id,postDetails);
+          let res= await database.updateDocument(process.env.REACT_APP_Database_Id,process.env.REACT_APP_Posts_Collection_Id,data.$id,postDetails);
        console.log('Comment Updated')
            setpostDetails(postDetails)
        setComment('')
@@ -91,6 +93,10 @@ useEffect(()=>{
        catch(err){console.log(err,'failed in Comment')}
         
     }
+  
+
+
+    
 return (
 
     <Widgetwrap mt='1rem'>
@@ -127,7 +133,7 @@ return (
 
     {postDetails?.Likes?.length}
 </FlexBetween>
-<FlexBetween gap='1rem'>
+<FlexBetween gap='0.3rem'>
     <IconButton onClick={()=>setIsComments(!IsComments)}>
 
     <ChatBubbleOutline/>
@@ -142,11 +148,7 @@ return (
 title='Check this Post In  SocialNetwork'
 url={`${host}/posts/${data.$id}`}
 >
-<WhatsappIcon
-
->
-
-</WhatsappIcon>
+<ShareOutlined/>
 </WhatsappShareButton>
   
           </IconButton>

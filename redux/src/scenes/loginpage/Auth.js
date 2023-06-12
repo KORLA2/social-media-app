@@ -10,17 +10,17 @@ export let useAuth = ()=>{
         
         let unique=uuid().split('-').join('')
        let res= await account.create(unique,user?.Mail,user?.Password,user?.Name);
-           console.log(unique)
+           console.log(process.env.REACT_APP_User_Bucket_Id)
 
       
-        await storage.createFile('647dc0ede1a1dad59818',unique,image)
-        let user_photo=await storage.getFilePreview('647dc0ede1a1dad59818',unique);
+        await storage.createFile(process.env.REACT_APP_User_Bucket_Id,unique,image)
+        let user_photo=await storage.getFilePreview(process.env.REACT_APP_User_Bucket_Id,unique);
       user.Media=user_photo.href;
       
 let database_res= await database.createDocument(
  
-    '6470905eda50ef893bdb',
-    '6470906723f0b50c18db',
+    process.env.REACT_APP_Database_Id,
+    process.env.REACT_APP_User_Collection_Id,
    unique,
     user
         );
@@ -39,24 +39,13 @@ let Logined= async(user)=>{
 
   let Email_Response=await account.createEmailSession(user?.Mail,user?.Password)
   
-   let Database_response= await database.getDocument('6470905eda50ef893bdb','6470906723f0b50c18db',Email_Response.userId)
-     console.log(Database_response)
-    let User={  Mail:Database_response.Mail,
-    Password:Database_response.Password,
-    Name:Database_response.Name,
-    City:Database_response.City,
-    Occupation:Database_response.Occupation,
-    Friends:Database_response.Friends,
-    posts:Database_response.posts,
-    Media:Database_response.Media,
-    Views:Database_response.Views,
-    
-    }
-
+   let User_response= await database.getDocument(process.env.REACT_APP_Database_Id,
+    process.env.REACT_APP_User_Collection_Id,Email_Response.userId)
+   
        localStorage.setItem('sessionId',Email_Response.$id)
        localStorage.setItem('unique',Email_Response.userId)
-       localStorage.setItem('user',JSON.stringify(User))
-       return Database_response;
+       localStorage.setItem('user',JSON.stringify(User_response))
+       return User_response;
        
     }
    catch(err){

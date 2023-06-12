@@ -24,19 +24,17 @@ export default function  ProfilePage (){
    
        try{
            
-           let res=await database.getDocument('6470905eda50ef893bdb','6470906723f0b50c18db',userID)
+           let res=await database.getDocument(process.env.REACT_APP_Database_Id,process.env.REACT_APP_User_Collection_Id,userID)
           dispatch(setnavigatedUser({user:{Mail:res.Mail,Password:res.Password,Name:res.Name,City:res.City,Occupation:res.Occupation,
           Friends:res.Friends,posts:res.posts,Media:res.Media,Views:res.Views,NumberofPosts:res.posts.length
      
           }}))
           
-          await database.updateDocument('6470905eda50ef893bdb','6470906723f0b50c18db',userID,{Mail:res.Mail,Password:res.Password,Name:res.Name,City:res.City,Occupation:res.Occupation,
+          await database.updateDocument(process.env.REACT_APP_Database_Id,process.env.REACT_APP_User_Collection_Id,userID,{Mail:res.Mail,Password:res.Password,Name:res.Name,City:res.City,Occupation:res.Occupation,
           Friends:res.Friends,posts:res.posts,Media:res.Media,Views:res.Views+1
      
           })
-     let user=JSON.parse(localStorage.getItem('user'));
-     user.Views+=1;
-          localStorage.setItem('user',JSON.stringify(user))
+     
         setLoading(0)
        }
        catch(err){console.log(err,'failed')}

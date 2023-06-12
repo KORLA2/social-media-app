@@ -3,7 +3,6 @@ import {DarkMode,LightMode, EditOutlined ,Facebook,Google,LinkedIn, NavigateBefo
 import {useNavigate} from 'react-router-dom'
 import {setMode,setcurrentUser} from '../../state/index'
 import { useState } from "react";
-import {Image} from '../../components/image'
 import load from './social-networking.jpg'
 import {account} from '../Appwrite/Appwrite'
 import Social from './social-networking.jpg'
@@ -12,8 +11,9 @@ import {useAuth} from './Auth'
 import { FlexBetween } from "../../components/FlexBetween";
 import {InputBase,Alert} from '@mui/material'
 import {useEffect} from 'react'
-
+import {useLocation} from 'react-router-dom'
 import { useDispatch, useSelector } from "react-redux";
+import { Widgetwrap } from "../../components/widgets";
 export default function  LoginPage (){
     let {palette}=useTheme();
    let [alert,showAlert]=useState('')
@@ -30,14 +30,7 @@ let [ErrorMessage,setErrorMessage]=useState('')
     let primary=palette.primary.light;
 let [Loading,setLoading]=useState(0)
 let {Registerd,Logined} =useAuth()
-useEffect(()=>{
-    if(localStorage.getItem('sessionId'))
-    navigate('/home')
-    
-    
-    
-},[])
-
+let loc= useLocation()
 
 
 
@@ -51,8 +44,10 @@ setLoading(0)
 console.log(Response)
 if(Response.emailVerification)
 navigate('/home')
+
 else 
 {
+    
   setsuccesfulMessage('Check your Mail and Verify your account');
  await account.createVerification('https://lf9b0l-3000.csb.app/verifyaccount')
     
@@ -108,7 +103,7 @@ let mode=useSelector(state=>state.mode)
 
 return (
 
-   <Box>
+  <Box width='100%' height='100%'>
     <FlexBetween gap='1rem' alignItems='center'>
 <Box/>
 <Box
@@ -157,25 +152,26 @@ sx={{
     </FlexBetween>
 
 <Box
-width='100%'
 display='flex'
-justifyContent={nonmobile?'space-between':'center'}
-gap='2rem'
-p='1.5rem'
->
+gap='0.5rem'
+padding='2rem 5%'
+
+
+sx={{
+    backgroundImage:`url(${Social})`,
+    backgroundRepeat:'no-repeat',
+    backgroundSize:'100% 100%'
+}}
+justifyContent='space-between'>
 {
 nonmobile&&(<Box
-width='50%'
+flexBasis='50%'
 >
-<Image image={Social} size={'100%'}/>
 
-    <Typography sx={{textAlign:'center' ,color:palette?.primary?.dark}}>
-Welcome to Social Network Please Sign IN /Register to Continue
-    </Typography>
 </Box>)
 }
 
-<Box width={nonmobile?'50%':'100%'}
+<Box flexBasis={nonmobile?'50%':'100%'}
 p='2rem'
 m='2rem auto'
 borderRadius='1.5rem'
@@ -219,8 +215,16 @@ alert&&(<Alert sx={{mb:'1rem'}} severity="error">{ErrorMessage}</Alert>
     <Box backgroundColor={neutral} p='1rem' >
 
 <TextField placeholder="Occupation"  label='Occupation' required  onChange={(e)=>setUser({...user,Occupation:e.target.value})}  sx={{width:'100%'}}/>
-    </Box>
+    </Box> 
+     <Box backgroundColor={neutral} p='1rem' >
 
+<TextField placeholder="Twitter URL"  label='Twitter Link'   onChange={(e)=>setUser({...user,Twitter:e.target.value})}  sx={{width:'100%'}}/>
+    </Box>
+     <Box backgroundColor={neutral} p='1rem' >
+
+<TextField placeholder="LinkedIn URL"  label='LinkedIn Link'  onChange={(e)=>setUser({...user,LinkedIn:e.target.value})}  sx={{width:'100%'}}/>
+    </Box>
+   
     <Box 
 p='1rem'
 mt='1rem'
@@ -254,7 +258,7 @@ setimage(accepted[0])
             {image.path}
             </Typography>
             <EditOutlined/>
-        </FlexBetween>):<p>Add Your Profle Photo Only .jpg Allowed</p>
+        </FlexBetween>):<p>Add Your Profle Photo </p>
    }
         
             </Box>
@@ -316,20 +320,19 @@ mt:'1rem'
     
 }
 
+</Box>
 
 </Box>
 
-
-</Box>
 
 {
-    Loading&&(
+    Loading?(
       <Box sx={{position:'fixed',backgroundColor:'rgba(0,0,0,0.5)',top:'0',bottom:'0',left:'0',right:'0'}}>
      <Box sx={{position:'absolute',top:'50%',left:'50%',transform:'translate(-50%,-50%)'}}>
           <CircularProgress/>
      </Box>
       </Box>
-    )
+    ):''
 }
 
     </Box>

@@ -10,25 +10,24 @@ import {useParams} from 'react-router-dom'
 import {useState,useEffect} from 'react'
 import {query, database,client } from '../Appwrite/Appwrite'
 export default function Message(){
-    let nonmobile=useMediaQuery('(min-width:1000px)')
+    let [AllMessages,setAllMessages]=useState([]);
     let {palette}=useTheme();
     let main=palette?.neutral?.light
     let [message,setmessage]=useState('');
     let {userId} =useParams();
-  let [Loading,setLoading]=useState(1)
-
-    let [AllMessages,setAllMessages]=useState([]);
+  let [Loading,setLoading]=useState(0)
      async  function fetchAllMessages(){
 
 try{
-        setLoading(1)
-          let res=await database.listDocuments('6470905eda50ef893bdb','647ac13cd54d3e2223c1',
+    // setLoading(1)
+          let res=await database.listDocuments(process.env.REACT_APP_Database_Id,process.env.REACT_APP_Message_Collection_Id,
    [query.equal('From',[userId,localStorage.getItem('unique')]),
     query.equal('To',[userId,localStorage.getItem('unique')])
          ]      )
-        
+       
      setAllMessages(res.documents)
-setLoading(0)
+     localStorage.setItem('Messages',JSON.stringify(res.documents))
+    // setLoading(0)
           
         }
         catch(err){
@@ -51,8 +50,11 @@ setLoading(0)
       if(data.payload.From===userId&&data.payload.To===localStorage.getItem('unique')||data.payload.To===userId&&data.payload.From===localStorage.getItem('unique'))
 
 {
-    
-fetchAllMessages()
+    let Messages=JSON.parse(localStorage.getItem('Messages'));
+console.log(Messages,data.payload)
+Messages.push(data.payload)
+    localStorage.setItem('Messages',JSON.stringify(Messages));
+setAllMessages(Messages)
 }     
      }) 
   
@@ -64,8 +66,9 @@ fetchAllMessages()
   
    async function SendMessage(){
         try{
-            let res=await database.createDocument('6470905eda50ef893bdb','647ac13cd54d3e2223c1',uuid(),{From:localStorage.getItem('unique'),To:userId,Message:message})
-       setmessage('')
+            if(!message)return;
+            let res=await database.createDocument(process.env.REACT_APP_Database_Id,process.env.REACT_APP_Message_Collection_Id,uuid(),{From:localStorage.getItem('unique'),To:userId,Message:message})
+    setmessage('');
         }
         catch(err){console.log('Error in Message Page')}
         
@@ -85,17 +88,17 @@ justifyContent='space-between'>
 </Box>
 
 <Box flexBasis='50%' position='relative'>
-    <Widgetwrap position='fixed' height='600px' width='600px' top='10%' display='flex' justifyContent={userId?'':'center'} alignItems={userId?AllMessages?'':'flex-end':'center'}   bottom='2%'
+    <Widgetwrap  height='600px' width='600px' overflowY='scroll' display='flex' justifyContent={userId?'':'center'} alignItems={userId?AllMessages?'':'flex-end':'center'}   bottom='2%'
     >
     
     
      {
-         userId?<Box position='absoute' height='600px' width='600px'>
-       <Box height='500px' >
+         userId?<Box height='600px' width='600px'>
+       <Box height='500px'  >
                        {
-                AllMessages.map(e=>
-             <Typography color={palette?.neutral?.main} sx={{textAlign:e.From===userId?'start':'end'}} >
-                 {e.Message}
+                AllMessages?.map(e=>
+             <Typography color={palette?.neutral?.main} sx={{textAlign:e?.From===userId?'start':'end'}} >
+                 {e?.Message}
              </Typography>
              )
 }

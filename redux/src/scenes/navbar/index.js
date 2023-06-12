@@ -11,6 +11,9 @@ import { useNavigate } from "react-router-dom";
 import { Widgetwrap } from "../../components/widgets";
 export default function Navbar(){
  let theme=useTheme();
+ 
+ 
+ 
     let dispatch=useDispatch()
     let [toggle,setToggle] =useState(false)
     let color=useSelector(state=>state.mode)
@@ -24,14 +27,25 @@ let main=theme?.palette.neutral?.main
     let primary=theme.palette.primary.dark;
     let neutral=theme.palette?.neutral?.light
     let currentUser=JSON.parse(localStorage.getItem('user'))
+    
+const [open, setOpen] = useState(false);
+  const handleOpen = () => setOpen(true);
+  let [Loading,setLoading]=useState(0)
+  const handleClose = () => setOpen(false);
+  let [SuggestedUsers,setSuggestedUsers]=useState([]);
 console.log(currentUser)
-let [AllNotifications,setAllNotifications]=useState([])
+let [AllNotifications,setAllNotifications]=useState(0)
 async function fetchNotifications(){
     try{
-        
-  let notifications= await database.listDocuments('6470905eda50ef893bdb','6478e2c274ce8e6c036f');
-setAllNotifications(notifications.documents)
-
+        setLoading(1)
+  let notifications= await database.listDocuments(process.env.REACT_APP_Database_Id,process.env.REACT_APP_Notification_Collection_Id)
+   notifications=  notifications.documents.filter((e)=>{
+         if((e.FromId===localStorage.getItem('unique'))&&e.accepted||e.ToId===localStorage.getItem('unique'))return e;
+     })
+  console.log(notifications.length)
+     
+setLoading(0)
+setAllNotifications(notifications.length)
     }
     catch(err)
 {
@@ -44,11 +58,6 @@ useEffect(()=>{
     fetchNotifications()
 },[])
 
-const [open, setOpen] = useState(false);
-  const handleOpen = () => setOpen(true);
-  let [Loading,setLoading]=useState(0)
-  const handleClose = () => setOpen(false);
-  let [SuggestedUsers,setSuggestedUsers]=useState([]);
 async function LogOut(){
     try{
         setLoading(1)
@@ -66,7 +75,7 @@ async function Suggested(e){
    try{
     console.log(e.target.value)
        
-   let res=await  database.listDocuments('6470905eda50ef893bdb','6470906723f0b50c18db',
+   let res=await  database.listDocuments(process.env.REACT_APP_Database_Id,process.env.REACT_APP_User_Collection_Id,
     
 [query.search('Name',e.target.value)
    ]   )
@@ -169,7 +178,7 @@ onClick={handleClose}
 <Message   sx={{fontSize:'25px'}} />
 </IconButton>
 <IconButton onClick={()=>navigate('/Notifications')}>
-<Badge badgeContent={AllNotifications.length}  color="success">
+<Badge badgeContent={AllNotifications}  color="success">
 <Notifications   sx={{fontSize:'25px'}} />
 </Badge>
 </IconButton>
@@ -246,9 +255,9 @@ background:background
 <Message   sx={{fontSize:'25px'}} />
 </IconButton>
 
-
 <IconButton onClick={()=>{navigate('/Notifications');setToggle(0) }}  sx={{fontSize:'25px'}}>
-<Badge badgeContent={AllNotifications.length} color="success">
+    
+<Badge badgeContent={AllNotifications} color="success">
 <Notifications   sx={{fontSize:'25px'}} />
 </Badge>
 </IconButton>
@@ -293,6 +302,7 @@ background:background
     </FlexBetween>
 )
 }
+
 
 
 
