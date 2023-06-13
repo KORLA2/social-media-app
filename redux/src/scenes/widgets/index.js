@@ -32,7 +32,7 @@ async  function sendFollowRequest(){
     To_Name:user.Name
     })
       console.log(res,'FriendRequest Sent')
-emailjs.send('service_xiin6bv','template_gf0vpks',{Mail:user.Mail,To_Name:user.Name,From_Name:currentUser.Name},'jZhaG7It_IP0ii8YF')
+emailjs.send(process.env.REACT_APP_Service_Id,process.env.REACT_APP_Template_Id,{Mail:user.Mail,To_Name:user.Name,From_Name:currentUser.Name},'jZhaG7It_IP0ii8YF')
 
 }
 catch(err){
