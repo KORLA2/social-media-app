@@ -13,7 +13,7 @@ import emailjs from '@emailjs/browser';
 export  default function Widgets(){
 let {palette}=useTheme()
 let dark=palette.background?.dark;    
-let primarylight=palette.primary?.light; 
+let primarydark=palette.primary?.dark; 
 let nonmobile=useMediaQuery('(min-width:1000px)')
 let medium=palette.neutral?.medium   
 let main=palette.neutral?.main 
@@ -51,7 +51,7 @@ useEffect(()=>{
           
       ])       
         console.log(response)
-        if(response)
+        if(response.documents.length)
         setFriendRequest(1)
      }      
      catch(err){console.log(err,"error while fetching Friend Request Sent or not")}
@@ -90,7 +90,7 @@ color={dark}
 sx={{
 
     "&:hover":{
-        color:primarylight,
+        color:primarydark,
         cursor:'pointer'
     }
 }}
@@ -177,7 +177,7 @@ Number of Posts Uploaded
        textDecoration:'none'
     }}
     
-    to={user.Twitter}target='_blank'> 
+    to={user.Twitter} target='_blank'> 
 <Typography color={main}  >
         Twitter
         </Typography><Typography color={main}>

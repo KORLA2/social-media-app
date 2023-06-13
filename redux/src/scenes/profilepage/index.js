@@ -29,7 +29,7 @@ export default function  ProfilePage (){
           Friends:res.Friends,posts:res.posts,Media:res.Media,Views:res.Views,NumberofPosts:res.posts.length
      
           }}))
-          
+   
           await database.updateDocument(process.env.REACT_APP_Database_Id,process.env.REACT_APP_User_Collection_Id,userID,{Mail:res.Mail,Password:res.Password,Name:res.Name,City:res.City,Occupation:res.Occupation,
           Friends:res.Friends,posts:res.posts,Media:res.Media,Views:res.Views+1
      
@@ -44,6 +44,8 @@ export default function  ProfilePage (){
         fetchposts();
         
     },[userID])
+
+  
     
 return (
 

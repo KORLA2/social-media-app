@@ -42,7 +42,21 @@ let fetchcurrentuser= async()=>{
       let User_response= await database.getDocument(process.env.REACT_APP_Database_Id,
     process.env.REACT_APP_User_Collection_Id,localStorage.getItem('unique'))
    
-       localStorage.setItem('user',JSON.stringify(User_response))
+   let user={
+       Mail:User_response.Mail,
+       Password:User_response.Password,
+       Name:User_response.Name,
+       City:User_response.City,
+       Occupation:User_response.Occupation,
+       Friends:User_response.Friends,
+       posts:User_response.posts,
+       Media:User_response.Media,
+       Views:User_response.Views,
+       Twitter:User_response.Twitter,
+       LinkedIn:User_response.LinkedIn,
+       
+   }
+       localStorage.setItem('user',JSON.stringify(user))
   }catch(err){console.log(err,'Error in home page')}
   
 }
@@ -52,6 +66,7 @@ useEffect(()=>{
  if(currentUser.posts)
 
 setDisplay(1)
+
   fetch()
 fetchcurrentuser();
 },[])

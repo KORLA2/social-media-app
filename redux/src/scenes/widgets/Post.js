@@ -1,5 +1,5 @@
 import { Widgetwrap } from "../../components/widgets";
-import {Box, IconButton, CircularProgress,Divider,Button,TextField, Typography,useTheme} from '@mui/material';
+import {Box, IconButton, CircularProgress,Divider,Button,TextField,Skeleton, Typography,useTheme} from '@mui/material';
 import { Friend } from "../../components/Friends";
 import { FlexBetween } from "../../components/FlexBetween";
 import {WhatsappShareButton,WhatsappIcon} from 'react-share'
@@ -14,6 +14,7 @@ export let Post=({data,isProfile})=>{
     console.log(host)
     let [postDetails,setpostDetails]=useState({});
     let [Loading,setLoading]=useState('');
+    let [ImageLoading,setImageLoading]=useState(1);
     let [Share,setShare]=useState('');
 let [isLiked,setisLiked]=useState(0);
     useEffect(()=>{
@@ -40,13 +41,12 @@ useEffect(()=>{
     async function getuserPost(){
         try{
             console.log(data.Media)
-            setLoading(1)
         let Media=await storage.getFilePreview(process.env.REACT_APP_Post_Bucket_Id,data.Media)
       
       setMedia(Media.href)
       
       
-      setLoading(0)
+      setImageLoading(0)
         }
         catch(err){
             console.log(err,'Fetching Image Error in Post')
@@ -114,13 +114,21 @@ return (
   {postDetails?.Description}
            </Typography>
 
-
-   <img width='100%' src={Media} style={{borderRadius:'0.75rem',marginTop:'0.75rem',p:'0.2rem'}} />
+{
+ ImageLoading?  
+  <Skeleton
+              animation="wave"
+              height={10}
+              width="80%"
+              style={{ marginBottom: 6 }}
+            />
+ : <img width='100%' src={Media} style={{borderRadius:'0.75rem',marginTop:'0.75rem',p:'0.2rem'}} />
+}
     
 
             </Box>
 
-<FlexBetween gap='0.25rem'>
+<FlexBetween>
 <FlexBetween gap='1rem'>
 <FlexBetween gap='0.3rem'>
 <IconButton onClick={()=>{PostLikes()}}>
