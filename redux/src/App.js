@@ -34,9 +34,9 @@ return (
         <Route path='/Posts/:PostID' element={<ViewSharedPost/>}/>
         <Route path='/profile/:userID' element={<ProfilePage/>}/>
         <Route path='/Message/:userId?' element={<Message/>}/>
-        <Route path='/verifyaccount' element={<Verify/>}/>
         <Route path='/Notifications' element={<Notifications/>}/>
         </Route>
+        <Route path='/verifyaccount' element={<Verify/>}/>
         
     </Routes>
     </ThemeProvider>

@@ -1,7 +1,7 @@
 import {useTheme,Box,Typography} from '@mui/material'
 import {FlexBetween} from '../../components/FlexBetween'
 import { Widgetwrap } from '../../components/widgets'
-import image from '../../components/Hero.png'
+import image from '../../components/Beauty.jpg'
 export let Advert=()=>{
  let {palette}= useTheme();
 let dark=palette.neutral?.dark,

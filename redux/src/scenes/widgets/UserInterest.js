@@ -1,7 +1,7 @@
 import Dropzone from 'react-dropzone'
 import {useState} from 'react'
 import {storage,database} from  '../Appwrite/Appwrite'
-import { InputBase,useTheme,Button,Box ,Typography,Divider, CircularProgress,useMediaQuery} from '@mui/material'
+import { InputBase,useTheme,Button,Box ,Typography,Divider, CircularProgress,Alert,useMediaQuery} from '@mui/material'
 import {Image} from '../../components/image'
 import {FlexBetween} from '../../components/FlexBetween'
 import {Widgetwrap} from '../../components/widgets'
@@ -17,7 +17,7 @@ let [image,setimage]=useState(null);
     let [Loading,setLoading]=useState('')
     let dispatch=useDispatch();
     let currentUser=JSON.parse(localStorage.getItem('user'))
-
+let [alert,setalert]=useState(0)
 
     let postID=  uuid().split('-').join('');
     let nonmobile=useMediaQuery('(min-width:1000px)')
@@ -58,7 +58,7 @@ useEffect(()=>{
 let Post=async()=>{
     
  try{ 
-     
+   if(!data.Description||!image) {setalert(1);throw "error";  }
 data.Media=postID;
 setLoading(1)
   let res= await storage.createFile(process.env.REACT_APP_Post_Bucket_Id,postID,image)
@@ -79,6 +79,7 @@ setLoading(0)
 
     return (
         <Widgetwrap>
+            {alert?<Alert sx={{mb:'1rem'}} severity="error">'Fill All Details'</Alert>:''}
 <FlexBetween
 
 gap='1.5rem'
@@ -142,7 +143,7 @@ setimage(accepted[0])
 
 <Divider sx={{margin:'1.25rem'}}/>
 
-  <FlexBetween>
+  <FlexBetween gap='0.11rem'>
 
 <FlexBetween gap='0.25rem'  >
 <ImageOutlined color={mediumMain}/>
@@ -215,7 +216,10 @@ Add Audio
 </FlexBetween>)
 }
 <Button
-sx={{background:background,color:primary,borderRadius:'3rem'}}
+sx={{borderRadius:'3rem'}}
+variant='contained'
+color='primary'
+
 onClick={Post}
 >
     POST
@@ -232,8 +236,6 @@ onClick={Post}
       </Box>
     ):''
 }
-
-
-            </Widgetwrap>
+     </Widgetwrap>
     )
 }

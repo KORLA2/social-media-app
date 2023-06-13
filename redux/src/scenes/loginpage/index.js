@@ -32,7 +32,10 @@ let [Loading,setLoading]=useState(0)
 let {Registerd,Logined} =useAuth()
 let loc= useLocation()
 
-
+useEffect(()=>{
+    
+    if(localStorage.getItem('sessionId'))navigate('/home')
+},[])
 
 let Login=async (e)=>{
     try{
@@ -49,7 +52,7 @@ else
 {
     
   setsuccesfulMessage('Check your Mail and Verify your account');
- await account.createVerification('https://lf9b0l-3000.csb.app/verifyaccount')
+ await account.createVerification(`https://korlagouthamsocialnetwork.netlify.app/verifyaccount`)
     
 }
 
@@ -232,8 +235,6 @@ borderRadius='5px'
 
 >
 <Dropzone
-acceptedFiles='.jpg'
-multiple={true}
 onDrop={(accepted)=>
 setimage(accepted[0])
 
@@ -249,7 +250,7 @@ setimage(accepted[0])
         sx={{"&:hover":{cursor:'pointer'}}}
         border={`2px dashed ${palette.primary.main}`}
         >
-            <input {...getInputProps()}  accepted='.jpg'/>
+            <input {...getInputProps()}  accept='.jpg' />
    {
 
     image?(<FlexBetween>

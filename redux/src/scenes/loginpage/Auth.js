@@ -41,10 +41,23 @@ let Logined= async(user)=>{
   
    let User_response= await database.getDocument(process.env.REACT_APP_Database_Id,
     process.env.REACT_APP_User_Collection_Id,Email_Response.userId)
-   
+   let User_Details={
+       Mail:User_response.Mail,
+       Password:User_response.Password,
+       Name:User_response.Name,
+       City:User_response.City,
+       Occupation:User_response.Occupation,
+       Friends:User_response.Friends,
+       posts:User_response.posts,
+       Media:User_response.Media,
+       Views:User_response.Views,
+       Twitter:User_response.Twitter,
+       LinkedIn:User_response.LinkedIn,
+       
+   }
        localStorage.setItem('sessionId',Email_Response.$id)
        localStorage.setItem('unique',Email_Response.userId)
-       localStorage.setItem('user',JSON.stringify(User_response))
+       localStorage.setItem('user',JSON.stringify(User_Details))
        return User_response;
        
     }

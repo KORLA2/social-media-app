@@ -125,7 +125,7 @@ onClick={handleOpen}
     </FlexBetween>
     
     {
-        open&&(
+        open?(
             <Box
 onClick={handleClose}
             
@@ -149,7 +149,7 @@ onClick={handleClose}
           
         </Widgetwrap>
       </Box>
-        )
+        ):''
     }  
     </Box>
     
@@ -216,7 +216,7 @@ onClick={handleClose}
 
 }
 {
-!nonmobile&&toggle&&(
+!nonmobile&&toggle?(
 
     <Box sx={{
 position:'fixed',
@@ -287,7 +287,7 @@ background:background
    </FlexBetween>
 
   </Box>
-)
+):''
 
 }
  {
