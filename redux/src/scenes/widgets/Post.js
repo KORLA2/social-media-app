@@ -1,5 +1,5 @@
 import { Widgetwrap } from "../../components/widgets";
-import {Box, IconButton, CircularProgress,Divider,Button,TextField,Skeleton, Typography,useTheme} from '@mui/material';
+import {Box, IconButton,Snackbar ,Alert,CircularProgress,Divider,Button,TextField,Skeleton, Typography,useTheme} from '@mui/material';
 import { Friend } from "../../components/Friends";
 import { FlexBetween } from "../../components/FlexBetween";
 import {WhatsappShareButton,WhatsappIcon} from 'react-share'
@@ -55,6 +55,8 @@ useEffect(()=>{
     getuserPost() 
 },[data.Media,postDetails])
 // console.log()
+
+
  let PostLikes= async ()=>{
    console.log(postDetails)
     
@@ -88,6 +90,7 @@ useEffect(()=>{
        console.log('Comment Updated')
            setpostDetails(postDetails)
        setComment('')
+
        setLoading(0)
        }
        catch(err){console.log(err,'failed in Comment')}
@@ -103,7 +106,7 @@ return (
         
   { !isProfile&&((<Friend UserId={postDetails?.UserId}/>))
 }
-
+ 
         <Box
         mt='0.5rem'
         >
@@ -118,8 +121,8 @@ return (
  ImageLoading?  
   <Skeleton
               animation="wave"
-              height={10}
-              width="80%"
+              height={40}
+              width="100%"
               style={{ marginBottom: 6 }}
             />
  : <img width='100%' src={Media} style={{borderRadius:'0.75rem',marginTop:'0.75rem',p:'0.2rem'}} />

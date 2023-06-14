@@ -1,7 +1,7 @@
 import Dropzone from 'react-dropzone'
 import {useState} from 'react'
 import {storage,database} from  '../Appwrite/Appwrite'
-import { InputBase,useTheme,Button,Box ,Typography,Divider, CircularProgress,Alert,useMediaQuery} from '@mui/material'
+import { InputBase,useTheme,Button,Box ,Typography,Divider, Snackbar,CircularProgress,Alert,useMediaQuery} from '@mui/material'
 import {Image} from '../../components/image'
 import {FlexBetween} from '../../components/FlexBetween'
 import {Widgetwrap} from '../../components/widgets'
@@ -18,7 +18,7 @@ let [image,setimage]=useState(null);
     let dispatch=useDispatch();
     let currentUser=JSON.parse(localStorage.getItem('user'))
 let [alert,setalert]=useState(0)
-
+let [ErrorMessage,setErrorMessage]=useState('');
     let postID=  uuid().split('-').join('');
     let nonmobile=useMediaQuery('(min-width:1000px)')
 let [data,setdata]=useState({
@@ -29,6 +29,8 @@ let [data,setdata]=useState({
     Likes:[],
      Comments:[],
 });
+let [open,setOpen]=useState(0);
+let vertical='top',horizontal='center';
 let navigate=useNavigate();
 let mediumMain=palette.neutral?.mediumMain;
 let medium=palette.neutral?.main;
@@ -53,12 +55,14 @@ useEffect(()=>{
     updateuser();
 },[currentUser.posts])
    
-
+let handleClose=()=>{
+  setOpen(0)
+}
 
 let Post=async()=>{
     
  try{ 
-   if(!data.Description||!image) {setalert(1);throw "error";  }
+   if(!data.Description||!image) {setalert(1);setErrorMessage(!data.Description?'Description is Required':'Image is Requierd');throw "error";  }
 data.Media=postID;
 setLoading(1)
   let res= await storage.createFile(process.env.REACT_APP_Post_Bucket_Id,postID,image)
@@ -67,6 +71,7 @@ setLoading(1)
      console.log('success in post data base',res)
 
 dispatch(setPost({post:postID}))
+setOpen(1)
 setLoading(0)
      
  }
@@ -79,7 +84,13 @@ setLoading(0)
 
     return (
         <Widgetwrap>
-            {alert?<Alert sx={{mb:'1rem'}} severity="error">'Fill All Details'</Alert>:''}
+            {alert?<Alert sx={{mb:'1rem'}} severity="error">{ErrorMessage}</Alert>:''}
+              <Snackbar
+        anchorOrigin={ {vertical,horizontal} }
+        open={open}
+        onClose={handleClose}
+        message="Post Uploaded Successfully"
+      />
 <FlexBetween
 
 gap='1.5rem'

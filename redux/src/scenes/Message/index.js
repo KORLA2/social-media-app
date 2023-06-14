@@ -93,7 +93,7 @@ try{
           
              </Box>
              <FlexBetween p='0.5rem' m ='0.3rem' borderRadius='0.75rem' backgroundColor={palette?.neutral?.light} >
-                 <InputBase sx={{fontSize:'1rem',width:'100%'}}  value={message}
+                 <InputBase sx={{fontSize:'1rem',width:'100%'}} placeholder='Type Something...'  value={message}
     onChange={(e)=>setmessage(e.target.value)} />
                  <IconButton >
                      <SendRounded sx={{fontSize:'2rem'}} onClick={SendMessage}/>

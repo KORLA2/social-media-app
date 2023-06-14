@@ -27,6 +27,7 @@ let main=theme?.palette.neutral?.main
     let primary=theme.palette.primary.dark;
     let neutral=theme.palette?.neutral?.light
     let currentUser=JSON.parse(localStorage.getItem('user'))
+const [Input, setInput] = useState(false);
     
 const [open, setOpen] = useState(false);
   const handleOpen = () => setOpen(true);
@@ -83,11 +84,20 @@ async function Suggested(e){
    }
    catch(err){console.log(err)}
 }
+useEffect(()=>{
+    handleClose()
+    
+    if(Input){
+    setInput()
+    }
+},[nonmobile])
 
 return (
 
-    <FlexBetween  pading='2rem 6%' backgroundColor={alt} >
-        <FlexBetween  gap='1.75rem'>
+<FlexBetween  position='relative' pading='2rem 6%' backgroundColor={alt} >
+       
+
+      <FlexBetween  gap='1.75rem'>
 <Typography fontWeight='bold'
 fontSize='clamp(1rem,2rem,2.25rem)'
 sx={{
@@ -107,15 +117,17 @@ onClick={()=>navigate('/home')}
 
 
 {
-    nonmobile&&(
-<Box>
+    Input||nonmobile?(
+<Box >
    <FlexBetween
    backgroundColor= {neutral}
 gap='3rem'
 padding='0.1rem 1.5rem'
+
 onClick={handleOpen}
+sx={{position:Input?'absolute':'',  top:'0',left:'0',bottom:'0',right:'0',zIndex:1}}
    >
-    <InputBase placeholder='Search...' onChange={Suggested}/>
+    <InputBase  p='0.1rem' fullWidth placeholder='Search...' onChange={Suggested} />
     
 
     
@@ -124,44 +136,17 @@ onClick={handleOpen}
         </IconButton>
     </FlexBetween>
     
-    {
-        open?(
-            <Box
-onClick={handleClose}
-            
-        open={open}
-        aria-labelledby="modal-modal-title"
-        aria-describedby="modal-modal-description"
-        sx={{position:'fixed' ,top:'8%',left:0,right:0,bottom:0,backgroundColor:'rgba(0,0,0,0.5)',zIndex:3}}
-      >
-        <Widgetwrap sx={{width:400,position:'absolute',left:'15%',top:'0%'}} >
-          {
-              SuggestedUsers.length?SuggestedUsers.map(e=>
-                  <Box display='flex' flexDirection='column' gap='0.5rem'>
-                  <Friend UserId={e.$id} isMessage={0}/>
-                  <Divider sx={{m:'0.3rem'}}/>
-              </Box>
-              ):<Typography color={main}>
-                 Search Users in SocialNetwork
-                  </Typography>
-              
-          }
-          
-        </Widgetwrap>
-      </Box>
-        ):''
-    }  
     </Box>
     
-        )
+        ):''
 
 }
 
         </FlexBetween>
 
 {
-   nonmobile?
-   <FlexBetween gap='2rem'>
+ nonmobile?
+   <FlexBetween gap='2rem' >
 <IconButton onClick={()=>{dispatch(setMode())}}>
 
 {
@@ -173,6 +158,10 @@ onClick={handleClose}
     
     />
 }
+    </IconButton>
+    
+    <IconButton>
+    <Search />
     </IconButton>
 <IconButton onClick={()=>navigate('/Message')}>
 <Message   sx={{fontSize:'25px'}} />
@@ -214,7 +203,10 @@ onClick={handleClose}
    </IconButton>
    </Box>
 
+
+
 }
+
 {
 !nonmobile&&toggle?(
 
@@ -254,7 +246,9 @@ background:background
 <IconButton onClick={()=>{setToggle(0);navigate('/Message')}}>
 <Message   sx={{fontSize:'25px'}} />
 </IconButton>
-
+<IconButton  onClick={()=>{setToggle(0);handleOpen();setInput(1)}}>
+<Search sx={{fontSize:'25px'}}/>
+</IconButton>
 <IconButton onClick={()=>{navigate('/Notifications');setToggle(0) }}  sx={{fontSize:'25px'}}>
     
 <Badge badgeContent={AllNotifications} color="success">
@@ -287,19 +281,41 @@ background:background
    </FlexBetween>
 
   </Box>
-):''
 
+):''
 }
- {
-    Loading?(
-      <Box sx={{position:'fixed',backgroundColor:'rgba(0,0,0,0.5)',top:'0',bottom:'0',left:'0',right:'0',zIndex:1}}>
-     <Box sx={{position:'absolute',top:'50%',left:'50%',transform:'translate(-50%,-50%)'}}>
-          <CircularProgress/>
-     </Box>
+
+
+{
+        open?(
+            <Box
+onClick={handleClose}
+            
+        open={open}
+        aria-labelledby="modal-modal-title"
+        aria-describedby="modal-modal-description"
+        sx={{position:'fixed' ,top:Input?'9%':'8%',left:0,right:0,bottom:0,backgroundColor:'rgba(0,0,0,0.5)',zIndex:3}}
+      >
+        <Widgetwrap sx={{width:Input?'auto':400,position:'absolute',left:Input?'0':'15%',right:Input?'0':'', top:'2%'}} >
+          {
+              SuggestedUsers.length?SuggestedUsers.map(e=>
+                  <Box display='flex' flexDirection='column' gap='0.5rem'>
+                  <Friend UserId={e.$id} isMessage={0}/>
+                  <Divider sx={{m:'0.3rem'}}/>
+              </Box>
+              ):<Typography color={main}>
+                 Search Users in SocialNetwork
+                  </Typography>
+              
+          }
+          
+        </Widgetwrap>
       </Box>
-    ):''
-}
+        ):''
+    }  
+
     </FlexBetween>
+
 )
 }
 
