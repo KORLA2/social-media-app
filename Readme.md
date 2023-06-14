@@ -15,6 +15,7 @@ When ever I make changes and push to github github actions triggger , build the 
 All routes all private without authentication no one would be able to use social network.
 
 **Tech Stack**
+
 Appwrite cloud is used for authentication, database, storage, realtime, queries.
 
 React.js , Material UI, light & dark Modes , Redux Toolkit for state management , Email.js for sending Mails.
