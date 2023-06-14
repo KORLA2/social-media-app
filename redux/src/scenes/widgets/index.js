@@ -33,7 +33,10 @@ async  function sendFollowRequest(){
     To_Name:user.Name,From_Mail:(JSON.parse(localStorage.getItem('user'))).Mail
     })
       console.log(res,'FriendRequest Sent')
+
 emailjs.send(process.env.REACT_APP_Service_Id,process.env.REACT_APP_Template_Id,{Mail:user.Mail,To_Name:user.Name,From_Name:currentUser.Name},process.env.REACT_APP_Public_Key)
+
+
 
 }
 catch(err){
