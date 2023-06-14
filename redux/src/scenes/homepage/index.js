@@ -119,13 +119,13 @@ flexBasis={nonmobile?'26%':undefined}
 </Box>
 
 {
-    Loading&&(
+    Loading?(
       <Box sx={{position:'fixed',backgroundColor:'rgba(0,0,0,0.5)',top:'0',bottom:'0',left:'0',right:'0'}}>
      <Box sx={{position:'absolute',top:'50%',left:'50%',transform:'translate(-50%,-50%)'}}>
           <CircularProgress/>
      </Box>
       </Box>
-    )
+    ):''
 }
 
 </Box>):''

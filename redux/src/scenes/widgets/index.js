@@ -23,16 +23,17 @@ let user=useSelector((state)=>{
     if(userID)return state.navigatedUser
     return JSON.parse(localStorage.getItem('user'))
 });
+console.log(user?.Twitter)
 let currentUser=JSON.parse(localStorage.getItem('user'))
 let isFriend=currentUser.Friends?.includes(userID)
 async  function sendFollowRequest(){
     
     try{
     let res=await  database.createDocument(process.env.REACT_APP_Database_Id,process.env.REACT_APP_Notification_Collection_Id,uuid(),{Name:currentUser.Name,ToId:userID,FromId:localStorage.getItem('unique'),accepted:'',
-    To_Name:user.Name
+    To_Name:user.Name,From_Mail:(JSON.parse(localStorage.getItem('user'))).Mail
     })
       console.log(res,'FriendRequest Sent')
-emailjs.send('service_xiin6bv','template_gf0vpks',{Mail:user.Mail,To_Name:user.Name,From_Name:currentUser.Name},'jZhaG7It_IP0ii8YF')
+emailjs.send(process.env.REACT_APP_Service_Id,process.env.REACT_APP_Template_Id,{Mail:user.Mail,To_Name:user.Name,From_Name:currentUser.Name},process.env.REACT_APP_Public_Key)
 
 }
 catch(err){
@@ -43,6 +44,7 @@ useEffect(()=>{
    async function isFriendRequestSend(){
      try{
          
+        console.log('friend')
          
       let response=await database.listDocuments(process.env.REACT_APP_Database_Id,process.env.REACT_APP_Notification_Collection_Id,[
           query.equal('FromId',localStorage.getItem('unique')),

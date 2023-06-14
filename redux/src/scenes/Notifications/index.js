@@ -1,5 +1,6 @@
 import { Widgetwrap } from "../../components/widgets"
 import Navbar from '../navbar/index'
+import emailjs from '@emailjs/browser';
 import {FlexBetween} from '../../components/FlexBetween'
 import {Box,Typography,Button,Divider,CircularProgress,useTheme} from '@mui/material'
 import {useEffect,useState} from 'react'
@@ -73,11 +74,15 @@ let  updateNotification= async(e,idx)=>{
             Name:e.Name,
             ToId:e.ToId,
             FromId:e.FromId,
-            accepted:'yes'
+            accepted:'yes',
+            From_Mail:e.From_Mail
         })
       let modifiedNotifications=  ToNotifications;
       modifiedNotifications[idx].accepted='yes';
       console.log(modifiedNotifications)
+     emailjs.send(process.env.REACT_APP_Service_Id,process.env.REACT_APP_Second_Template_Id,{Mail:e.From_Mail,To_Name:e.Name,From_Name:currentUser.Name},process.env.REACT_APP_Public_Key)
+
+      
       setToNotifications(modifiedNotifications)
       setLoading(0)
     }

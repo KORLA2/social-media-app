@@ -60,7 +60,8 @@ else
     catch(msg){
         setLoading(0)
         showAlert(1)
-        setErrorMessage('Login Error')
+        setErrorMessage(msg.message)
+        console.log(msg.message)
         console.log(msg)
     }
 }
@@ -77,7 +78,7 @@ setsuccesfulMessage('Registration Succesful Now LogIn to Continue')
    catch(err){
        setLoading(0)
 showAlert(1)
-        setErrorMessage('Registration Error')
+        setErrorMessage(err.message)
 
         console.log(err)
        
