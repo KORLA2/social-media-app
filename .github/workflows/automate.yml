@@ -25,6 +25,6 @@ jobs:
         uses: docker/build-push-action@v4
         with:
           context: .
-          file: ./redux/Dockerfile
+          file: ../../../redux/Dockerfile
           push: true
           tags: ${{ secrets.DOCKERHUB_USERNAME }}/socialnetwork:latest
