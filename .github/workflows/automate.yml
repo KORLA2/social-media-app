@@ -27,4 +27,4 @@ jobs:
           context: .
           file: ./redux/Dockerfile
           push: true
-          tags: ${{ secrets.DOCKERHUB_USERNAME }}/practice:latest
+          tags: ${{ secrets.DOCKERHUB_USERNAME }}/socialnetwork:latest
